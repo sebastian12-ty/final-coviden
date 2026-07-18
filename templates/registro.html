@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Registro — COVIDEN Dental</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c0:#050e27;--c1:#0c1e4a;--b1:#1d4ed8;--b2:#2563eb;--s1:#0ea5e9;--s2:#38bdf8;--g1:#10b981;--red:#ef4444;--gold:#f59e0b;--white:#fff;--pearl:#f0f6ff;--border:#dde8f7;--gray:#64748b;--ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;--ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--ff);min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:var(--white);overflow-x:hidden;}
+
+/* LEFT */
+.left{background:linear-gradient(155deg,var(--c0) 0%,var(--c1) 60%,#162d6b 100%);display:flex;flex-direction:column;justify-content:center;padding:64px 56px;position:relative;overflow:hidden;}
+.left-blob{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;}
+.lb1{width:400px;height:400px;background:rgba(37,99,235,.15);top:-100px;right:-80px;}
+.lb2{width:300px;height:300px;background:rgba(14,165,233,.1);bottom:-60px;left:-60px;}
+.left-logo{font-family:var(--ffh);color:var(--white);font-size:1.8rem;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.left-logo em{color:var(--s2);font-style:normal;}
+.left-sub{color:rgba(255,255,255,.38);font-size:.76rem;letter-spacing:.4px;margin-bottom:44px;}
+.left-title{font-family:var(--ffh);color:var(--white);font-size:2.2rem;line-height:1.18;font-weight:700;margin-bottom:14px;}
+.left-title span{color:var(--s2);}
+.left-desc{color:rgba(255,255,255,.55);font-size:.88rem;line-height:1.72;margin-bottom:36px;}
+.perks{display:flex;flex-direction:column;gap:13px;}
+.perk{display:flex;align-items:center;gap:12px;opacity:0;animation:perkIn .5s var(--ease) forwards;}
+@keyframes perkIn{to{opacity:1;transform:none;}from{opacity:0;transform:translateX(-20px);}}
+.perk-icon{width:38px;height:38px;border-radius:10px;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.perk-text{color:rgba(255,255,255,.68);font-size:.83rem;line-height:1.45;}
+.perk-text strong{color:var(--white);}
+/* Floating badge */
+.float-badge{position:absolute;bottom:40px;right:40px;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 18px;animation:float 4s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.fb-label{font-size:.62rem;font-weight:700;color:var(--s2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.fb-row{display:flex;align-items:center;gap:8px;}
+.fb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#fbbf24);display:flex;align-items:center;justify-content:center;font-size:.8rem;}
+.fb-info{font-size:.74rem;color:rgba(255,255,255,.7);}
+.fb-pts{font-size:.7rem;color:var(--s2);font-weight:700;}
+
+/* RIGHT */
+.right{display:flex;flex-direction:column;justify-content:center;padding:48px 56px;overflow-y:auto;background:var(--pearl);}
+.form-header{margin-bottom:28px;}
+.form-header h2{font-family:var(--ffh);font-size:1.9rem;color:var(--c0);margin-bottom:5px;}
+.form-header p{color:var(--gray);font-size:.84rem;}
+.form-welcome{background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(14,165,233,.06));border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:12px 16px;font-size:.79rem;color:var(--b1);margin-bottom:22px;display:flex;align-items:center;gap:8px;}
+.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:0;}
+.fg.full{grid-column:1/-1;}
+.fg label{font-size:.67rem;font-weight:700;color:var(--c1);letter-spacing:.5px;text-transform:uppercase;}
+.input-wrap{position:relative;}
+.fg input{width:100%;padding:12px 14px 12px 40px;border:1.5px solid var(--border);border-radius:12px;font-family:var(--ff);font-size:.88rem;color:var(--c0);outline:none;transition:all .25s;background:var(--white);}
+.fg input:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.fg input.valid{border-color:var(--g1);}
+.fg input.invalid{border-color:var(--red);}
+.inp-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;}
+.inp-check{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:.85rem;opacity:0;transition:opacity .2s;}
+.fg input.valid~.inp-check{opacity:1;}
+.pwd-wrap{position:relative;}
+.pwd-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--gray);font-size:.95rem;transition:color .2s;}
+.pwd-toggle:hover{color:var(--b2);}
+/* Password strength */
+.pwd-meter{margin-top:6px;}
+.pwd-bars{display:flex;gap:4px;margin-bottom:4px;}
+.pwd-bar{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background .3s;}
+.pwd-bar.w{background:var(--red);}
+.pwd-bar.f{background:var(--gold);}
+.pwd-bar.g{background:var(--g1);}
+.pwd-lbl{font-size:.66rem;color:var(--gray);}
+/* Terms */
+.terms-row{display:flex;align-items:flex-start;gap:10px;margin-top:6px;margin-bottom:18px;}
+.terms-row input{width:16px;height:16px;margin-top:2px;accent-color:var(--b2);flex-shrink:0;}
+.terms-row label{font-size:.77rem;color:var(--gray);line-height:1.55;}
+.terms-row a{color:var(--b2);font-weight:600;}
+/* Submit */
+.btn-reg{width:100%;background:linear-gradient(135deg,var(--b1),var(--b2));color:var(--white);border:none;padding:14px;border-radius:50px;font-size:.93rem;font-weight:700;cursor:pointer;font-family:var(--ff);transition:all .3s var(--spring);letter-spacing:.3px;position:relative;overflow:hidden;}
+.btn-reg::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.15));opacity:0;transition:opacity .3s;}
+.btn-reg:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(29,78,216,.4);}
+.btn-reg:hover::after{opacity:1;}
+.btn-reg:disabled{opacity:.55;transform:none;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0 14px;}
+.divider span{color:var(--gray);font-size:.76rem;white-space:nowrap;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.login-link{text-align:center;font-size:.82rem;color:var(--gray);}
+.login-link a{color:var(--b2);font-weight:700;transition:color .2s;}
+.login-link a:hover{color:var(--s1);}
+/* Flash */
+.flash{padding:12px 16px;border-radius:12px;font-size:.82rem;font-weight:600;margin-bottom:18px;}
+.flash.err{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.flash.ok{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+/* Points preview */
+.pts-preview{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.pts-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--gold),#fbbf24);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.pts-text h4{font-size:.82rem;font-weight:700;color:var(--c0);}
+.pts-text p{font-size:.72rem;color:var(--gray);}
+@media(max-width:768px){body{grid-template-columns:1fr;}.left{display:none;}.right{padding:32px 24px;}.fg-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="left-blob lb1"></div>
+  <div class="left-blob lb2"></div>
+  <div class="left-logo">🦷 COVI<em>DEN</em></div>
+  <p class="left-sub">Centro Odontológico Integral · Comas, Lima</p>
+  <h2 class="left-title">Crea tu cuenta<br>y gestiona tu <span>salud bucal</span></h2>
+  <p class="left-desc">Accede a tu historial de análisis con IA, gestiona citas, pagos y gana puntos por cada interacción.</p>
+  <div class="perks">
+    <div class="perk" style="animation-delay:.1s"><div class="perk-icon">🤖</div><p class="perk-text"><strong>Historial dental con IA</strong> — Análisis guardados y reportes PDF</p></div>
+    <div class="perk" style="animation-delay:.2s"><div class="perk-icon">📅</div><p class="perk-text"><strong>Citas online</strong> — Agenda y recibe confirmaciones al instante</p></div>
+    <div class="perk" style="animation-delay:.3s"><div class="perk-icon">🏆</div><p class="perk-text"><strong>Sistema de puntos</strong> — Gana puntos y sube de nivel</p></div>
+    <div class="perk" style="animation-delay:.4s"><div class="perk-icon">💬</div><p class="perk-text"><strong>Asistente Groq AI</strong> — Chat guardado con historial completo</p></div>
+  </div>
+  <div class="float-badge">
+    <p class="fb-label">¡Bienvenida!</p>
+    <div class="fb-row"><div class="fb-av">🥉</div><div><p class="fb-info">Nuevo paciente</p><p class="fb-pts">+50 puntos de bienvenida</p></div></div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="form-header">
+    <h2>Crear cuenta</h2>
+    <p>Únete a COVIDEN Dental y cuida tu sonrisa</p>
+  </div>
+  <div class="form-welcome">🎁 <span>Al registrarte recibirás <strong>50 puntos de bienvenida</strong> automáticamente.</span></div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" id="reg-form" novalidate>
+    <div class="fg-grid" style="margin-bottom:14px;">
+      <div class="fg">
+        <label>Nombre *</label>
+        <div class="input-wrap">
+          <span class="inp-icon">👤</span>
+          <input type="text" name="nombre" id="f-nombre" placeholder="Tu nombre" required autocomplete="given-name" oninput="validateField(this)">
+          <span class="inp-check">✅</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Apellido *</label>
+        <div class="input-wrap">
+          <span class="inp-icon">👤</span>
+          <input type="text" name="apellido" id="f-apellido" placeholder="Tu apellido" required autocomplete="family-name" oninput="validateField(this)">
+          <span class="inp-check">✅</span>
+        </div>
+      </div>
+      <div class="fg full">
+        <label>Correo electrónico *</label>
+        <div class="input-wrap">
+          <span class="inp-icon">✉️</span>
+          <input type="email" name="email" id="f-email" placeholder="tu@correo.com" required autocomplete="email" oninput="validateField(this)">
+          <span class="inp-check">✅</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Teléfono</label>
+        <div class="input-wrap">
+          <span class="inp-icon">📞</span>
+          <input type="tel" name="telefono" placeholder="9XX XXX XXX" autocomplete="tel">
+        </div>
+      </div>
+      <div class="fg">
+        <label>DNI</label>
+        <div class="input-wrap">
+          <span class="inp-icon">🪪</span>
+          <input type="text" name="dni" placeholder="12345678" maxlength="8">
+        </div>
+      </div>
+      <div class="fg full">
+        <label>Contraseña *</label>
+        <div class="input-wrap pwd-wrap">
+          <span class="inp-icon">🔒</span>
+          <input type="password" name="password" id="f-pwd" placeholder="Mínimo 8 caracteres" required minlength="8" oninput="checkPwd(this.value)" style="padding-right:44px;">
+          <button type="button" class="pwd-toggle" onclick="togglePwd('f-pwd',this)">👁</button>
+        </div>
+        <div class="pwd-meter">
+          <div class="pwd-bars"><div class="pwd-bar" id="pb1"></div><div class="pwd-bar" id="pb2"></div><div class="pwd-bar" id="pb3"></div><div class="pwd-bar" id="pb4"></div></div>
+          <p class="pwd-lbl" id="pwd-lbl">Ingresa una contraseña</p>
+        </div>
+      </div>
+      <div class="fg full">
+        <label>Confirmar contraseña *</label>
+        <div class="input-wrap pwd-wrap">
+          <span class="inp-icon">🔒</span>
+          <input type="password" name="password2" id="f-pwd2" placeholder="Repite tu contraseña" required style="padding-right:44px;">
+          <button type="button" class="pwd-toggle" onclick="togglePwd('f-pwd2',this)">👁</button>
+        </div>
+      </div>
+    </div>
+    <div class="terms-row">
+      <input type="checkbox" id="terms" required>
+      <label for="terms">Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a> de COVIDEN Dental.</label>
+    </div>
+    <button type="submit" class="btn-reg" id="btn-reg">Crear mi cuenta →</button>
+  </form>
+  <div class="divider"><span>¿Ya tienes cuenta?</span></div>
+  <p class="login-link"><a href="/login">Inicia sesión aquí</a></p>
+</div>
+
+<script>
+function validateField(inp){const ok=inp.value.trim().length>1;inp.classList.toggle('valid',ok);inp.classList.toggle('invalid',!ok&&inp.value.length>0);}
+function togglePwd(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+function checkPwd(v){
+  const bars=[document.getElementById('pb1'),document.getElementById('pb2'),document.getElementById('pb3'),document.getElementById('pb4')];
+  const lbl=document.getElementById('pwd-lbl');
+  bars.forEach(b=>{b.className='pwd-bar';});
+  if(!v){lbl.textContent='Ingresa una contraseña';return;}
+  let score=0;
+  if(v.length>=8)score++;if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+  const cls=score<=1?'w':score<=2?'f':'g';
+  const labels=['','Débil','Regular','Buena','Fuerte'];
+  for(let i=0;i<score;i++)bars[i].classList.add(cls);
+  lbl.textContent='Contraseña: '+(labels[score]||'');
+}
+document.getElementById('reg-form').addEventListener('submit',function(e){
+  const p1=document.getElementById('f-pwd').value;
+  const p2=document.getElementById('f-pwd2').value;
+  if(p1!==p2){e.preventDefault();document.getElementById('f-pwd2').classList.add('invalid');alert('Las contraseñas no coinciden.');return;}
+  const btn=document.getElementById('btn-reg');btn.disabled=true;btn.textContent='Creando cuenta...';
+});
+</script>
+</body>
+</html>

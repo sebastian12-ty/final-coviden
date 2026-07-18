@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Iniciar sesión — COVIDEN Dental</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c0:#050e27;--c1:#0c1e4a;--b1:#1d4ed8;--b2:#2563eb;--s1:#0ea5e9;--s2:#38bdf8;--white:#fff;--border:#dde8f7;--gray:#64748b;--ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{font-family:var(--ff);background:linear-gradient(155deg,var(--c0) 0%,var(--c1) 60%,#162d6b 100%);display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden;}
+/* Animated bg */
+.bg-orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;animation:orbDrift ease-in-out infinite;}
+@keyframes orbDrift{0%,100%{transform:translate(0,0);}50%{transform:translate(var(--dx),var(--dy));}}
+.o1{width:500px;height:500px;background:rgba(37,99,235,.15);top:-100px;right:-100px;--dx:-40px;--dy:30px;animation-duration:14s;}
+.o2{width:350px;height:350px;background:rgba(14,165,233,.1);bottom:-80px;left:-80px;--dx:30px;--dy:-40px;animation-duration:18s;}
+.o3{width:250px;height:250px;background:rgba(16,185,129,.07);top:40%;left:40%;--dx:-20px;--dy:20px;animation-duration:22s;}
+/* Grid bg */
+.bg-grid{position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:40px 40px;}
+/* Card */
+.card{background:rgba(255,255,255,.06);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:52px 48px;width:100%;max-width:460px;box-shadow:0 32px 80px rgba(0,0,0,.45);position:relative;z-index:1;animation:cardIn .6s var(--spring);}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.97);}to{opacity:1;transform:none;}}
+.card-top{margin-bottom:32px;}
+.card-logo{font-family:var(--ffh);color:var(--white);font-size:1.9rem;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:9px;}
+.card-logo em{color:var(--s2);font-style:normal;}
+.logo-dot{width:9px;height:9px;background:#10b981;border-radius:50%;animation:dotPulse 2s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4);}50%{box-shadow:0 0 0 8px rgba(16,185,129,0);}}
+.card-sub{color:rgba(255,255,255,.35);font-size:.76rem;margin-bottom:24px;}
+.card-title{font-family:var(--ffh);color:var(--white);font-size:1.6rem;margin-bottom:5px;}
+.card-desc{color:rgba(255,255,255,.48);font-size:.82rem;}
+/* Fields */
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:.67rem;font-weight:700;color:rgba(255,255,255,.42);letter-spacing:.6px;text-transform:uppercase;margin-bottom:7px;}
+.inp-wrap{position:relative;}
+.inp-icon2{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;}
+.fg input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--white);border-radius:13px;padding:13px 44px;font-family:var(--ff);font-size:.9rem;outline:none;transition:all .25s;}
+.fg input::placeholder{color:rgba(255,255,255,.22);}
+.fg input:focus{border-color:var(--s2);box-shadow:0 0 0 3px rgba(56,189,248,.15);background:rgba(255,255,255,.1);}
+.pwd-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.38);font-size:.95rem;transition:color .2s;}
+.pwd-toggle:hover{color:var(--s2);}
+/* Remember */
+.remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.remember-row label{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.5);font-size:.78rem;cursor:pointer;}
+.remember-row input[type=checkbox]{accent-color:var(--s2);}
+.remember-row a{color:var(--s2);font-size:.78rem;transition:color .2s;}
+.remember-row a:hover{color:var(--white);}
+/* Buttons */
+.btn-login{width:100%;background:linear-gradient(135deg,var(--b1),var(--b2));color:var(--white);border:none;padding:14px;border-radius:50px;font-family:var(--ff);font-size:.93rem;font-weight:700;cursor:pointer;transition:all .3s var(--spring);letter-spacing:.3px;position:relative;overflow:hidden;}
+.btn-login::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:opacity .3s;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(29,78,216,.5);}
+.btn-login:hover::before{opacity:1;}
+.btn-login:disabled{opacity:.55;transform:none;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1);}
+.divider span{color:rgba(255,255,255,.25);font-size:.74rem;white-space:nowrap;}
+.btn-signup{width:100%;background:rgba(255,255,255,.07);color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.14);padding:13px;border-radius:50px;font-family:var(--ff);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .3s;display:block;text-align:center;text-decoration:none;}
+.btn-signup:hover{background:rgba(255,255,255,.13);}
+/* Flash */
+.flash{padding:12px 16px;border-radius:12px;font-size:.82rem;font-weight:600;margin-bottom:18px;}
+.flash.err{background:rgba(239,68,68,.14);color:#fca5a5;border:1px solid rgba(239,68,68,.3);}
+/* Trust badges */
+.trust-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:22px;}
+.trust-item{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.28);font-size:.7rem;}
+.back-link{text-align:center;margin-top:18px;}
+.back-link a{color:rgba(255,255,255,.22);font-size:.74rem;text-decoration:none;transition:color .2s;}
+.back-link a:hover{color:var(--s2);}
+/* Floating pts card */
+.pts-float{position:fixed;bottom:40px;left:40px;background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 18px;z-index:2;animation:ptsBounce 5s ease-in-out infinite;}
+@keyframes ptsBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.pts-float-label{font-size:.6rem;font-weight:700;color:var(--s2);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+.pts-float-row{display:flex;align-items:center;gap:10px;}
+.pts-float-icon{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.pts-float-info h4{color:var(--white);font-size:.78rem;font-weight:700;}
+.pts-float-info p{color:rgba(255,255,255,.45);font-size:.67rem;margin-top:1px;}
+@media(max-width:480px){.card{padding:36px 28px;}.pts-float{display:none;}}
+</style>
+</head>
+<body>
+<div class="bg-orb o1"></div>
+<div class="bg-orb o2"></div>
+<div class="bg-orb o3"></div>
+<div class="bg-grid"></div>
+
+<div class="pts-float">
+  <p class="pts-float-label">Gana puntos</p>
+  <div class="pts-float-row">
+    <div class="pts-float-icon">🏆</div>
+    <div class="pts-float-info">
+      <h4>Sube de nivel</h4>
+      <p>Bronce → Plata → Oro → Diamante</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-top">
+    <div class="card-logo"><div class="logo-dot"></div>🦷 COVI<em>DEN</em></div>
+    <p class="card-sub">Centro Odontológico Integral · Comas, Lima</p>
+    <h2 class="card-title">Bienvenido de vuelta</h2>
+    <p class="card-desc">Inicia sesión para acceder a tu historial y cuenta</p>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div class="flash {{ cat }}">⚠️ {{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" id="login-form">
+    <div class="fg">
+      <label>Correo electrónico</label>
+      <div class="inp-wrap">
+        <span class="inp-icon2">✉️</span>
+        <input type="email" name="email" placeholder="tu@correo.com" required autocomplete="email" autofocus>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Contraseña</label>
+      <div class="inp-wrap">
+        <span class="inp-icon2">🔒</span>
+        <input type="password" name="password" id="inp-pwd" placeholder="Tu contraseña" required autocomplete="current-password">
+        <button type="button" class="pwd-toggle" onclick="togglePwd()">👁</button>
+      </div>
+    </div>
+    <div class="remember-row">
+      <label><input type="checkbox" name="remember"> Mantener sesión</label>
+      <a href="#">¿Olvidaste tu contraseña?</a>
+    </div>
+    <button type="submit" class="btn-login" id="btn-login">Iniciar sesión →</button>
+  </form>
+
+  <div class="divider"><span>¿No tienes cuenta?</span></div>
+  <a href="/registro" class="btn-signup">Crear cuenta gratis · Gana 50 pts 🎁</a>
+
+  <div class="trust-row">
+    <div class="trust-item">🔒 <span>Seguro</span></div>
+    <div class="trust-item">🤖 <span>IA Dental</span></div>
+    <div class="trust-item">🏆 <span>Gamificación</span></div>
+  </div>
+  <div class="back-link"><a href="/">← Volver al sitio</a></div>
+</div>
+
+<script>
+function togglePwd(){const i=document.getElementById('inp-pwd');i.type=i.type==='password'?'text':'password';}
+document.getElementById('login-form').addEventListener('submit',function(){const b=document.getElementById('btn-login');b.disabled=true;b.textContent='Verificando...';});
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin — COVIDEN Dental</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c0:#050e27;--c1:#0c1e4a;--b1:#1d4ed8;--b2:#2563eb;--s2:#38bdf8;--white:#fff;--ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--ff);min-height:100vh;background:linear-gradient(155deg,var(--c0),var(--c1));display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+canvas#pc{position:fixed;inset:0;pointer-events:none;}
+.card{background:rgba(255,255,255,.05);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:52px 46px;width:100%;max-width:440px;box-shadow:0 32px 80px rgba(0,0,0,.45);position:relative;z-index:1;animation:cardIn .6s var(--spring);}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:var(--s2);font-size:.67rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:20px;}
+.logo{font-family:var(--ffh);color:var(--white);font-size:2.1rem;font-weight:900;margin-bottom:4px;}
+.logo em{color:var(--s2);font-style:normal;}
+.sub{color:rgba(255,255,255,.35);font-size:.76rem;margin-bottom:32px;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:.67rem;font-weight:700;color:rgba(255,255,255,.42);letter-spacing:.6px;text-transform:uppercase;margin-bottom:7px;}
+.inp-w{position:relative;}
+.inp-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;}
+.fg input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--white);border-radius:13px;padding:13px 14px 13px 42px;font-family:var(--ff);font-size:.9rem;outline:none;transition:all .25s;}
+.fg input::placeholder{color:rgba(255,255,255,.22);}
+.fg input:focus{border-color:var(--s2);box-shadow:0 0 0 3px rgba(56,189,248,.15);}
+.btn{width:100%;background:linear-gradient(135deg,var(--b1),var(--b2));color:var(--white);border:none;padding:14px;border-radius:50px;font-family:var(--ff);font-size:.93rem;font-weight:700;cursor:pointer;transition:all .3s var(--spring);letter-spacing:.3px;margin-top:4px;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(29,78,216,.5);}
+.btn:disabled{opacity:.55;transform:none;cursor:not-allowed;}
+.err{background:rgba(239,68,68,.14);color:#fca5a5;border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:11px 16px;font-size:.82rem;margin-bottom:18px;}
+.info-box{margin-top:18px;padding:12px 16px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:12px;font-size:.73rem;color:rgba(255,255,255,.35);text-align:center;line-height:1.7;}
+.info-box strong{color:rgba(255,255,255,.6);}
+.back{display:block;text-align:center;margin-top:18px;color:rgba(255,255,255,.22);font-size:.75rem;text-decoration:none;transition:color .2s;}
+.back:hover{color:var(--s2);}
+</style>
+</head>
+<body>
+<canvas id="pc"></canvas>
+<div class="card">
+  <div class="badge">🔒 Acceso Restringido</div>
+  <h1 class="logo">COVI<em>DEN</em></h1>
+  <p class="sub">Panel Administrativo · Solo personal autorizado</p>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<div class="err">⚠️ {{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="POST" id="form">
+    <div class="fg"><label>Usuario</label><div class="inp-w"><span class="inp-ico">👤</span><input type="text" name="user" placeholder="admin" required autofocus autocomplete="username"></div></div>
+    <div class="fg"><label>Contraseña</label><div class="inp-w"><span class="inp-ico">🔒</span><input type="password" name="password" placeholder="••••••••" required autocomplete="current-password"></div></div>
+    <button type="submit" class="btn" id="btn">Ingresar al Panel →</button>
+  </form>
+  <div class="info-box">Credenciales: <strong>admin</strong> / <strong>coviden2024</strong></div>
+  <a href="/" class="back">← Volver al sitio</a>
+</div>
+<script>
+document.getElementById('form').addEventListener('submit',function(){const b=document.getElementById('btn');b.disabled=true;b.textContent='Verificando...';});
+// Particles
+const canvas=document.getElementById('pc');const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const pts=[];for(let i=0;i<60;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+.5,dx:(Math.random()-.5)*.4,dy:(Math.random()-.5)*.4,a:Math.random()*.4+.1});
+function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(56,189,248,${p.a})`;ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(anim);}anim();
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+</script>
+</body>
+</html>

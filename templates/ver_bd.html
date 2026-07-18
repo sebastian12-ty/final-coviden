@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ver Base de Datos — COVIDEN Dental</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c0:#050e27;--c1:#0c1e4a;--b2:#2563eb;--s2:#38bdf8;--g1:#10b981;--red:#ef4444;--gold:#f59e0b;--pearl:#f0f6ff;--snow:#f8faff;--white:#fff;--border:#dde8f7;--gray:#64748b;--gray2:#94a3b8;--ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;--shadow:0 4px 20px rgba(5,14,39,.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--ff);background:var(--snow);color:var(--c0);padding:28px 32px;}
+a{text-decoration:none;color:inherit;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.logo{font-family:var(--ffh);font-size:1.4rem;font-weight:900;color:var(--c0);}
+.logo em{color:var(--s2);font-style:normal;}
+.page-title{font-size:.85rem;color:var(--gray);}
+.topbar-right{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:50px;font-size:.78rem;font-weight:700;border:none;cursor:pointer;font-family:var(--ff);transition:all .25s;}
+.btn-back{background:var(--pearl);color:var(--c0);border:1px solid var(--border);}
+.btn-back:hover{background:var(--border);}
+.btn-backup{background:linear-gradient(135deg,#059669,#10b981);color:var(--white);}
+.btn-backup:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,185,129,.35);}
+.db-info{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.db-chip{background:var(--white);border:1px solid var(--border);border-radius:50px;padding:6px 16px;font-size:.76rem;color:var(--gray);display:flex;align-items:center;gap:6px;box-shadow:var(--shadow);}
+.db-chip strong{color:var(--c0);font-weight:700;}
+/* Tabs */
+.tab-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:var(--shadow);}
+.tn-btn{padding:8px 16px;border-radius:10px;font-size:.77rem;font-weight:600;border:none;cursor:pointer;font-family:var(--ff);color:var(--gray);background:none;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.tn-btn:hover{background:var(--pearl);}
+.tn-btn.on{background:var(--c0);color:var(--white);}
+.tn-badge{background:rgba(56,189,248,.15);color:var(--s2);font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:50px;}
+.tn-btn.on .tn-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);}
+/* Table */
+.tbl-section{display:none;}
+.tbl-section.on{display:block;}
+.tbl-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
+.tbl-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tbl-hd h2{font-family:var(--ffh);font-size:1.1rem;color:var(--c0);}
+.tbl-hd p{font-size:.73rem;color:var(--gray);margin-top:2px;}
+.tbl-cnt{background:var(--pearl);color:var(--gray);font-size:.69rem;font-weight:700;padding:4px 12px;border-radius:50px;border:1px solid var(--border);}
+.tbl-wrap{overflow-x:auto;max-height:520px;overflow-y:auto;}
+.tbl-wrap::-webkit-scrollbar{width:5px;height:5px;}
+.tbl-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+table{width:100%;border-collapse:collapse;font-size:.78rem;}
+thead{position:sticky;top:0;z-index:10;}
+thead th{background:linear-gradient(135deg,var(--c0),var(--c1));color:var(--white);padding:10px 12px;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s;}
+tbody tr:hover{background:#fafcff;}
+tbody tr:last-child{border-bottom:none;}
+td{padding:10px 12px;vertical-align:middle;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c0);}
+td.truncate{max-width:160px;}
+.null-val{color:var(--gray2);font-style:italic;font-size:.72rem;}
+.img-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--border);cursor:zoom-in;}
+/* Search */
+.search-bar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.search-inp{flex:1;border:1.5px solid var(--border);border-radius:50px;padding:8px 16px;font-family:var(--ff);font-size:.84rem;outline:none;transition:border-color .2s;}
+.search-inp:focus{border-color:var(--b2);}
+.search-count{font-size:.73rem;color:var(--gray);white-space:nowrap;}
+/* Modal zoom */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9000;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal-img{max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain;}
+.modal-close{position:fixed;top:16px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* Empty */
+.empty-tbl{padding:48px;text-align:center;color:var(--gray);}
+.empty-tbl span{font-size:2.5rem;display:block;margin-bottom:10px;opacity:.4;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">🦷 COVI<em>DEN</em></div>
+    <div class="page-title">Visualizador de Base de Datos</div>
+  </div>
+  <div class="topbar-right">
+    <a href="/admin" class="btn btn-back">← Panel Admin</a>
+    <a href="/admin/backup-db" class="btn btn-backup">⬇️ Descargar Backup .db</a>
+  </div>
+</div>
+
+<div class="db-info">
+  <div class="db-chip">🗃️ <strong>SQLite</strong> — coviden.db</div>
+  <div class="db-chip">💾 Tamaño: <strong>{{ "%.1f"|format(db_size/1024) }} KB</strong></div>
+  <div class="db-chip">📋 Tablas: <strong>{{ data|length }}</strong></div>
+  <div class="db-chip">🕐 Consultado: <strong>{{ now }}</strong></div>
+  {% for tabla, info in data.items() %}
+  <div class="db-chip">{{ tabla }}: <strong>{{ info.count }}</strong></div>
+  {% endfor %}
+</div>
+
+<div class="tab-nav">
+  {% set icons = {'pacientes':'👥','escaneos':'🔬','citas':'📅','pagos':'💳','historial_clinico':'📋','notificaciones':'🔔','resenas':'⭐','inventario':'📦','chat_mensajes':'💬','votos':'👍'} %}
+  {% for tabla, info in data.items() %}
+  <button class="tn-btn {% if loop.first %}on{% endif %}" onclick="showTab('{{ tabla }}',this)">
+    {{ icons.get(tabla,'📄') }} {{ tabla.replace('_',' ').title() }}
+    <span class="tn-badge">{{ info.count }}</span>
+  </button>
+  {% endfor %}
+</div>
+
+{% for tabla, info in data.items() %}
+<div class="tbl-section {% if loop.first %}on{% endif %}" id="tab-{{ tabla }}">
+  <div class="tbl-card">
+    <div class="tbl-hd">
+      <div>
+        <h2>{{ icons.get(tabla,'📄') }} {{ tabla.replace('_',' ').title() }}</h2>
+        <p>{{ info.count }} registros{% if info.get('error') %} · <span style="color:var(--red);">Error: {{ info.error }}</span>{% endif %}</p>
+      </div>
+      <span class="tbl-cnt">{{ info.count }} filas</span>
+    </div>
+
+    {% if info.rows %}
+    <div class="search-bar">
+      <input class="search-inp" type="text" placeholder="Buscar en {{ tabla }}..."
+        oninput="filterTable('{{ tabla }}',this.value)" id="search-{{ tabla }}">
+      <span class="search-count" id="cnt-{{ tabla }}">{{ info.count }} resultados</span>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-{{ tabla }}">
+        <thead>
+          <tr>
+            {% for col in info.columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in info.rows %}
+          <tr>
+            {% for col in info.columns %}
+            {% set val = row.get(col) %}
+            <td class="truncate" title="{{ val|string|truncate(300) }}">
+              {% if val is none %}
+                <span class="null-val">null</span>
+              {% elif col in ['foto_perfil','captura_b64','foto_base64'] and val %}
+                <img class="img-thumb" src="data:image/jpeg;base64,{{ val[:80] }}..." onclick="openImg('data:image/jpeg;base64,{{ val }}')" title="Ver imagen">
+              {% elif val|string|length > 100 %}
+                <span title="{{ val|string }}">{{ val|string|truncate(80) }}</span>
+              {% else %}
+                {{ val }}
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-tbl"><span>🗃️</span>Sin registros en esta tabla{% if info.get('error') %} ({{ info.error }}){% endif %}</div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+<!-- Modal imagen -->
+<div class="modal-bg" id="modal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <img class="modal-img" id="modal-img" src="" alt="">
+</div>
+
+<script>
+function showTab(name, btn){
+  document.querySelectorAll('.tbl-section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tn-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  btn.classList.add('on');
+}
+function openImg(src){document.getElementById('modal-img').src=src;document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+function filterTable(tabla, q){
+  const tbl=document.getElementById('tbl-'+tabla);
+  const rows=tbl.querySelectorAll('tbody tr');
+  let vis=0;
+  rows.forEach(r=>{
+    const txt=r.textContent.toLowerCase();
+    const show=txt.includes(q.toLowerCase());
+    r.style.display=show?'':'none';
+    if(show)vis++;
+  });
+  document.getElementById('cnt-'+tabla).textContent=vis+' resultado'+(vis!==1?'s':'');
+}
+</script>
+</body>
+</html>

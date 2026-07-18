@@ -1,0 +1,692 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mi Cuenta — COVIDEN Dental</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c0:#050e27;--c1:#0c1e4a;--b1:#1d4ed8;--b2:#2563eb;--s1:#0ea5e9;--s2:#38bdf8;--g1:#10b981;--gold:#f59e0b;--red:#ef4444;--orange:#f97316;--pearl:#f0f6ff;--snow:#f8faff;--white:#fff;--border:#dde8f7;--gray:#64748b;--gray2:#94a3b8;--ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;--sb:260px;--shadow:0 4px 20px rgba(5,14,39,.08);--spring:cubic-bezier(.34,1.56,.64,1);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--ff);background:var(--snow);color:var(--c0);display:flex;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+button{font-family:var(--ff);cursor:pointer;border:none;}
+
+/* ═══ SIDEBAR ═══ */
+.sb{width:var(--sb);background:var(--c0);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.06);z-index:100;transition:all .3s;}
+.sb-top{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo{font-family:var(--ffh);color:var(--white);font-size:1.3rem;font-weight:700;}
+.sb-logo em{color:var(--s2);font-style:normal;}
+/* Profile in sidebar */
+.sb-profile{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;}
+.sb-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--b2));display:flex;align-items:center;justify-content:center;font-size:1.3rem;overflow:hidden;border:2px solid rgba(255,255,255,.15);flex-shrink:0;cursor:pointer;position:relative;}
+.sb-av img{width:100%;height:100%;object-fit:cover;}
+.sb-av-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:50%;font-size:.65rem;color:var(--white);}
+.sb-av:hover .sb-av-ov{opacity:1;}
+.sb-pinfo h4{color:var(--white);font-size:.86rem;font-weight:600;line-height:1.3;}
+.sb-pinfo p{color:rgba(255,255,255,.35);font-size:.69rem;margin-top:2px;}
+/* Level badge */
+.sb-level{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:50px;font-size:.64rem;font-weight:700;margin-top:4px;}
+.sb-level.bronce{background:rgba(194,133,90,.2);color:#e8a87c;}
+.sb-level.plata{background:rgba(156,163,175,.2);color:#d1d5db;}
+.sb-level.oro{background:rgba(245,158,11,.2);color:#fbbf24;}
+.sb-level.diamante{background:rgba(139,92,246,.2);color:#c4b5fd;}
+/* Nav */
+.sb-nav{padding:10px 0;flex:1;overflow-y:auto;}
+.sb-nav::-webkit-scrollbar{width:3px;}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+.sb-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;background:none;color:rgba(255,255,255,.5);font-size:.81rem;font-weight:500;text-align:left;font-family:var(--ff);transition:all .2s;border-left:3px solid transparent;}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.88);}
+.sb-item.on{background:rgba(14,165,233,.1);color:var(--s2);border-left-color:var(--s2);padding-left:15px;}
+.sb-icon{font-size:.98rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-cnt{margin-left:auto;background:rgba(56,189,248,.15);color:var(--s2);font-size:.59rem;font-weight:700;padding:2px 7px;border-radius:50px;}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-foot a{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.28);font-size:.78rem;transition:color .2s;}
+.sb-foot a:hover{color:var(--s2);}
+
+/* ═══ MAIN ═══ */
+.main{margin-left:var(--sb);flex:1;width:calc(100vw - var(--sb));max-width:1280px;padding:30px 36px;}
+.page-hd{margin-bottom:26px;}
+.page-hd h1{font-family:var(--ffh);font-size:1.85rem;color:var(--c0);}
+.page-hd p{font-size:.83rem;color:var(--gray);margin-top:4px;}
+/* Notif bar */
+.notif-bar{background:linear-gradient(135deg,var(--b1),var(--s1));border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;cursor:pointer;transition:opacity .2s;}
+.notif-bar:hover{opacity:.92;}
+.nb-icon{font-size:1.2rem;}
+.nb-text{color:var(--white);font-size:.82rem;font-weight:500;flex:1;}
+.nb-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:1rem;cursor:pointer;}
+
+/* TABS */
+.tab{display:none;animation:tabIn .35s cubic-bezier(.4,0,.2,1);}
+.tab.on{display:block;}
+@keyframes tabIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* CARDS */
+.card{background:var(--white);border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
+.card-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-hd h2{font-family:var(--ffh);font-size:1.2rem;color:var(--c0);}
+.card-hd p{font-size:.73rem;color:var(--gray);margin-top:2px;}
+.card-body{padding:22px;}
+
+/* ═══ RESUMEN ═══ */
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px;}
+.ds{background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.ds::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;}
+.ds.c1::after{background:var(--b2);}
+.ds.c2::after{background:var(--g1);}
+.ds.c3::after{background:var(--s1);}
+.ds.c4::after{background:var(--gold);}
+.ds-icon{font-size:1.5rem;margin-bottom:7px;}
+.ds-val{font-family:var(--ffh);font-size:2rem;font-weight:900;color:var(--c0);line-height:1;}
+.ds.c1 .ds-val{color:var(--b2);}
+.ds.c2 .ds-val{color:var(--g1);}
+.ds.c3 .ds-val{color:var(--s1);}
+.ds.c4 .ds-val{color:var(--gold);}
+.ds-lbl{font-size:.69rem;color:var(--gray);margin-top:4px;}
+/* Level progress */
+.level-card{background:linear-gradient(135deg,var(--c0),var(--c1));border-radius:18px;padding:24px;color:var(--white);margin-bottom:22px;position:relative;overflow:hidden;}
+.level-card::before{content:'';position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;background:rgba(255,255,255,.04);border-radius:50%;}
+.lc-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.lc-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border:2px solid rgba(255,255,255,.2);}
+.lc-icon.bronce{background:linear-gradient(135deg,#c2855a,#e8a87c);}
+.lc-icon.plata{background:linear-gradient(135deg,#9ca3af,#d1d5db);}
+.lc-icon.oro{background:linear-gradient(135deg,#f59e0b,#fbbf24);}
+.lc-icon.diamante{background:linear-gradient(135deg,#8b5cf6,#c4b5fd);}
+.lc-info h3{font-size:1rem;font-weight:700;}
+.lc-info p{font-size:.73rem;color:rgba(255,255,255,.5);margin-top:2px;}
+.lc-pts{font-family:var(--ffh);font-size:2rem;font-weight:900;color:var(--s2);margin-left:auto;}
+.prog-label{display:flex;justify-content:space-between;font-size:.71rem;color:rgba(255,255,255,.5);margin-bottom:5px;}
+.prog-w{width:100%;height:7px;background:rgba(255,255,255,.1);border-radius:50px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--b2),var(--s2));border-radius:50px;transition:width 1s var(--spring);}
+
+/* ═══ PERFIL ═══ */
+.perfil-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;}
+.foto-card{background:var(--white);border-radius:18px;padding:28px 22px;text-align:center;border:1px solid var(--border);box-shadow:var(--shadow);}
+.foto-wrap{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--b2));margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;overflow:hidden;border:3px solid var(--border);position:relative;cursor:pointer;}
+.foto-wrap img{width:100%;height:100%;object-fit:cover;}
+.foto-ov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:50%;color:var(--white);font-size:.7rem;}
+.foto-wrap:hover .foto-ov{opacity:1;}
+.foto-name{font-size:.95rem;font-weight:700;color:var(--c0);}
+.foto-email{font-size:.73rem;color:var(--gray);margin-top:3px;}
+.foto-since{font-size:.68rem;color:var(--gray2);margin-top:5px;}
+.foto-level{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 12px;border-radius:50px;font-size:.74rem;font-weight:700;}
+.foto-level.bronce{background:#fff7ed;color:#c2855a;}
+.foto-level.plata{background:#f9fafb;color:#6b7280;}
+.foto-level.oro{background:#fffbeb;color:#d97706;}
+.foto-level.diamante{background:#f5f3ff;color:#7c3aed;}
+.btn-foto{margin-top:14px;background:var(--pearl);color:var(--b2);border:1.5px solid var(--border);padding:9px 18px;border-radius:50px;font-size:.79rem;font-weight:600;transition:all .25s;width:100%;}
+.btn-foto:hover{background:var(--b2);color:var(--white);}
+input#foto-inp{display:none;}
+.form-card{background:var(--white);border-radius:18px;padding:26px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.form-card h3{font-family:var(--ffh);font-size:1.15rem;color:var(--c0);margin-bottom:20px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-size:.67rem;font-weight:700;color:var(--c1);letter-spacing:.4px;text-transform:uppercase;}
+.fg input,.fg select{padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;color:var(--c0);outline:none;transition:all .2s;width:100%;}
+.fg input:focus,.fg select:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.btn-save{background:linear-gradient(135deg,var(--b1),var(--b2));color:var(--white);padding:12px 26px;border-radius:50px;font-size:.87rem;font-weight:700;transition:all .3s var(--spring);}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(29,78,216,.35);}
+/* Tema toggle */
+.tema-row{display:flex;gap:10px;margin-top:6px;}
+.tema-btn{padding:8px 18px;border-radius:50px;font-size:.78rem;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--gray);cursor:pointer;transition:all .2s;}
+.tema-btn.sel{border-color:var(--b2);background:var(--pearl);color:var(--b2);}
+
+/* ═══ ESCANEOS ═══ */
+.scan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+.sc{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);transition:all .35s var(--spring);}
+.sc:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(5,14,39,.12);}
+.sc-photo{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:zoom-in;border-bottom:1px solid var(--border);transition:opacity .2s;}
+.sc-photo:hover{opacity:.9;}
+.sc-no-photo{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,var(--c0),var(--c1));display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:rgba(255,255,255,.18);border-bottom:1px solid var(--border);}
+.sc-body{padding:16px;}
+.sc-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;gap:8px;}
+.sc-score-row{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.sc-bar-w{flex:1;height:6px;background:var(--border);border-radius:50px;overflow:hidden;}
+.sc-bar{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--red),var(--gold),var(--g1));}
+.sc-num{font-size:.74rem;font-weight:700;color:var(--c1);}
+.sc-diag{font-size:.77rem;color:var(--gray);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;}
+.sc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.sc-tag{background:var(--pearl);border:1px solid var(--border);color:var(--c1);font-size:.62rem;font-weight:600;padding:2px 9px;border-radius:50px;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:9px;border-top:1px solid var(--border);}
+.sc-date{font-size:.67rem;color:var(--gray2);}
+.btn-pdf-sm{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;padding:5px 12px;border-radius:8px;font-size:.7rem;font-weight:700;transition:all .2s;}
+.btn-pdf-sm:hover{background:var(--red);color:var(--white);}
+.bd{display:inline-flex;padding:3px 10px;border-radius:50px;font-size:.63rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+.bd.baja{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.bd.media{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.bd.alta{background:#ffedd5;color:#9a3412;border:1px solid #fdba74;}
+.bd.urgente{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+
+/* ═══ CITAS ═══ */
+.citas-list{display:flex;flex-direction:column;gap:14px;}
+.cita-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);transition:all .3s;}
+.cita-card:hover{transform:translateX(4px);border-color:var(--b2);}
+.cita-icon{width:52px;height:52px;border-radius:14px;background:var(--pearl);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;border:1px solid var(--border);}
+.cita-info{flex:1;}
+.cita-svc{font-size:.9rem;font-weight:700;color:var(--c0);}
+.cita-meta{font-size:.74rem;color:var(--gray);margin-top:3px;}
+.cita-motivo{font-size:.74rem;color:var(--gray2);margin-top:2px;font-style:italic;}
+.cita-estado{text-align:right;}
+.estado-pill{display:inline-block;padding:4px 12px;border-radius:50px;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.ep.pendiente{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.ep.confirmada{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.ep.cancelada{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.ep.completada{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;}
+
+/* ═══ PAGOS ═══ */
+.pagos-list{display:flex;flex-direction:column;gap:12px;}
+.pago-card2{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);}
+.pago-met-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.pago-met-icon.yape{background:#f3e8ff;} .pago-met-icon.plin{background:#dbeafe;} .pago-met-icon.transferencia{background:#d1fae5;} .pago-met-icon.efectivo{background:#fef3c7;}
+.pago-info2{flex:1;}
+.pago-svc{font-size:.88rem;font-weight:700;color:var(--c0);}
+.pago-meta2{font-size:.73rem;color:var(--gray);margin-top:2px;}
+.pago-monto2{font-family:var(--ffh);font-size:1.25rem;font-weight:700;color:var(--c0);}
+.pago-estado2{text-align:right;margin-top:4px;}
+.pe{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.65rem;font-weight:700;text-transform:uppercase;}
+.pe.pendiente{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.pe.confirmado{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.pe.rechazado{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+
+/* ═══ CHAT ═══ */
+.chat-wrap{background:var(--white);border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;height:calc(100vh - 220px);max-height:680px;overflow:hidden;}
+.chat-hd{background:linear-gradient(135deg,var(--c0),var(--c1));padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.chat-hd-info{display:flex;align-items:center;gap:12px;}
+.chat-av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:2px solid rgba(255,255,255,.2);}
+.chat-ht h3{color:var(--white);font-size:.88rem;font-weight:600;}
+.chat-ht p{color:rgba(255,255,255,.5);font-size:.69rem;}
+.online{display:inline-block;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-right:4px;animation:onP 2s ease-in-out infinite;}
+@keyframes onP{0%,100%{opacity:1;}50%{opacity:.4;}}
+.chat-provider{color:rgba(255,255,255,.38);font-size:.63rem;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:50px;border:1px solid rgba(255,255,255,.12);}
+.btn-clear-chat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);padding:6px 14px;border-radius:50px;font-size:.73rem;transition:all .2s;}
+.btn-clear-chat:hover{background:rgba(255,255,255,.15);color:var(--white);}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:11px;background:#f8faff;}
+.chat-msgs::-webkit-scrollbar{width:4px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.cmsg{display:flex;gap:8px;align-items:flex-end;animation:msgIn .25s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.cmsg.u{flex-direction:row-reverse;}
+.c-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--b2));display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;overflow:hidden;}
+.cmsg.u .c-av{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
+.c-av img{width:100%;height:100%;object-fit:cover;}
+.cbub{max-width:76%;padding:10px 14px;border-radius:18px;font-size:.84rem;line-height:1.55;word-break:break-word;white-space:pre-wrap;}
+.cmsg.b .cbub{background:var(--white);color:var(--c0);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(5,14,39,.07);}
+.cmsg.u .cbub{background:linear-gradient(135deg,var(--b2),var(--b1));color:var(--white);border-bottom-right-radius:4px;}
+.c-time{font-size:.6rem;color:var(--gray2);margin-top:3px;}
+.cmsg.b .c-time{text-align:left;}
+.cmsg.u .c-time{text-align:right;}
+.qr-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.qr{background:var(--pearl);color:var(--b2);border:1px solid var(--border);border-radius:50px;padding:4px 12px;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--ff);}
+.qr:hover{background:var(--b2);color:var(--white);}
+.qr:disabled{opacity:.4;cursor:default;}
+.typ-ind{display:flex;gap:4px;align-items:center;}
+.td{width:7px;height:7px;border-radius:50%;background:var(--b2);opacity:.35;animation:tdA 1.1s infinite;}
+.td:nth-child(2){animation-delay:.18s;}.td:nth-child(3){animation-delay:.36s;}
+@keyframes tdA{0%,60%,100%{transform:none;opacity:.35;}30%{transform:translateY(-5px);opacity:1;}}
+.chat-inp{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:9px;align-items:center;background:var(--white);}
+.chat-field{flex:1;border:1.5px solid var(--border);border-radius:50px;padding:10px 16px;font-family:var(--ff);font-size:.87rem;outline:none;transition:border-color .2s;}
+.chat-field:focus{border-color:var(--b2);}
+.chat-send{background:linear-gradient(135deg,var(--b2),var(--b1));color:var(--white);width:40px;height:40px;border-radius:50%;font-size:.95rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-send:hover{transform:scale(1.1);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:56px 20px;color:var(--gray);}
+.empty-icon{font-size:3rem;margin-bottom:12px;opacity:.4;}
+.empty h3{font-size:.95rem;font-weight:600;color:var(--c1);margin-bottom:6px;}
+.empty p{font-size:.81rem;line-height:1.55;}
+.empty a{color:var(--b2);}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal-img{max-width:90vw;max-height:88vh;border-radius:14px;object-fit:contain;}
+.modal-close{position:fixed;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:var(--white);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--c0);color:var(--white);padding:12px 24px;border-radius:50px;font-size:.83rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .35s var(--spring);z-index:9999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+@media(max-width:900px){.sb{width:60px;}.sb-pinfo,.sb-logo,.sb-item span:not(.sb-icon),.sb-cnt,.sb-level,.sb-foot a span{display:none;}.sb-item{justify-content:center;padding:11px;}.main{margin-left:60px;width:calc(100vw - 60px);max-width:none;padding:20px 16px;}.perfil-grid{grid-template-columns:1fr;}.fg-row{grid-template-columns:1fr;}.scan-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sb">
+  <div class="sb-top"><div class="sb-logo">🦷 COVI<em>DEN</em></div></div>
+  <div class="sb-profile">
+    <div class="sb-av" onclick="goTab('perfil')">
+      {% if paciente.foto_perfil %}<img src="data:image/jpeg;base64,{{ paciente.foto_perfil }}" id="sb-av-img" alt="">{% else %}<span id="sb-av-txt">👤</span>{% endif %}
+      <div class="sb-av-ov">✏️</div>
+    </div>
+    <div class="sb-pinfo">
+      <h4>{{ paciente.nombre }} {{ paciente.apellido }}</h4>
+      <p>{{ paciente.email }}</p>
+      <div class="sb-level {{ (paciente.nivel or 'Bronce')|lower }}">
+        {% if paciente.nivel == 'Diamante' %}💎{% elif paciente.nivel == 'Oro' %}🥇{% elif paciente.nivel == 'Plata' %}🥈{% else %}🥉{% endif %}
+        {{ paciente.nivel or 'Bronce' }}
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <button class="sb-item on" id="nav-resumen" onclick="goTab('resumen',this)"><span class="sb-icon">🏠</span><span>Resumen</span></button>
+    <button class="sb-item" id="nav-perfil" onclick="goTab('perfil',this)"><span class="sb-icon">👤</span><span>Mi Perfil</span></button>
+    <button class="sb-item" id="nav-historial" onclick="goTab('historial',this)"><span class="sb-icon">📋</span><span>Mi Historial</span><span class="sb-cnt">{{ historial|length }}</span></button>
+    <button class="sb-item" id="nav-escaneos" onclick="goTab('escaneos',this)"><span class="sb-icon">🔬</span><span>Escaneos</span><span class="sb-cnt">{{ escaneos|length }}</span></button>
+    <button class="sb-item" id="nav-citas" onclick="goTab('citas',this)"><span class="sb-icon">📅</span><span>Mis Citas</span><span class="sb-cnt">{{ citas|length }}</span></button>
+    <button class="sb-item" id="nav-pagos" onclick="goTab('pagos',this)"><span class="sb-icon">💳</span><span>Mis Pagos</span><span class="sb-cnt">{{ pagos|length }}</span></button>
+    <button class="sb-item" id="nav-chat" onclick="goTab('chat',this)"><span class="sb-icon">💬</span><span>Asistente IA</span></button>
+  </div>
+  <div class="sb-foot"><a href="/logout"><span class="sb-icon">🔓</span><span>Cerrar sesión</span></a></div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Barra de notificaciones con campanita + dropdown -->
+  <div id="notif-wrap" style="position:relative;margin-bottom:{% if notifs %}0{% else %}0{% endif %}">
+    {% if notifs %}
+    <div class="notif-bar" id="notif-bar-main" onclick="toggleNotifDrop()">
+      <div class="nb-icon">🔔 <span id="notif-badge" style="background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:50px;margin-left:2px;">{{ notifs|length }}</span></div>
+      <p class="nb-text">{{ notifs[0].titulo }} — {{ notifs[0].mensaje }}</p>
+      <button class="nb-close" onclick="event.stopPropagation();markNotifs()">✅ Marcar leídas</button>
+    </div>
+    <div id="notif-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 32px rgba(5,14,39,.15);z-index:500;max-height:320px;overflow-y:auto;margin-top:4px;">
+      {% for n in notifs %}
+      <div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;display:flex;gap:10px;align-items:flex-start;">
+        <div style="font-size:1.1rem;">{% if n.tipo=='cumpleanos' %}🎂{% elif n.tipo=='cita' %}📅{% elif n.tipo=='pago' %}💳{% elif n.tipo=='historial' %}📋{% elif n.tipo=='puntos' %}⭐{% else %}🔔{% endif %}</div>
+        <div style="flex:1;"><p style="font-size:.82rem;font-weight:600;color:var(--c0);">{{ n.titulo }}</p><p style="font-size:.75rem;color:var(--gray);margin-top:2px;">{{ n.mensaje }}</p><p style="font-size:.67rem;color:var(--gray2);margin-top:3px;">{{ n.created_at[:16] }}</p></div>
+        <button onclick="marcarNotifId({{ n.id }},this)" style="background:var(--pearl);border:1px solid var(--border);color:var(--gray);border-radius:50px;padding:3px 10px;font-size:.68rem;cursor:pointer;">✓ Leer</button>
+      </div>
+      {% endfor %}
+      <div style="padding:10px 16px;text-align:center;"><button onclick="markNotifs()" style="background:var(--b2);color:#fff;border:none;border-radius:50px;padding:7px 18px;font-size:.76rem;font-weight:600;cursor:pointer;">✅ Marcar todas como leídas</button></div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ═══ RESUMEN ═══ -->
+  <div class="tab on" id="tab-resumen">
+    <div class="page-hd"><h1>¡Hola, {{ paciente.nombre }}! 👋</h1><p>Panel de salud bucal · COVIDEN Dental</p></div>
+    <!-- Level card -->
+    <div class="level-card">
+      <div class="lc-top">
+        <div class="lc-icon {{ (paciente.nivel or 'bronce')|lower }}">
+          {% if paciente.nivel == 'Diamante' %}💎{% elif paciente.nivel == 'Oro' %}🥇{% elif paciente.nivel == 'Plata' %}🥈{% else %}🥉{% endif %}
+        </div>
+        <div class="lc-info"><h3>Nivel {{ paciente.nivel or 'Bronce' }}</h3><p>Sigue ganando puntos para subir de nivel</p></div>
+        <div class="lc-pts">{{ paciente.puntos or 0 }} pts</div>
+      </div>
+      {% set pts = paciente.puntos or 0 %}
+      {% set next_pts = 100 if pts < 100 else 300 if pts < 300 else 600 if pts < 600 else 600 %}
+      {% set prev_pts = 0 if pts < 100 else 100 if pts < 300 else 300 if pts < 600 else 600 %}
+      {% set pct = ((pts - prev_pts) / (next_pts - prev_pts) * 100)|int if next_pts > prev_pts else 100 %}
+      <div class="prog-label"><span>{{ prev_pts }} pts</span><span>{{ next_pts if pts < 600 else '600+ (Diamante)' }} pts</span></div>
+      <div class="prog-w"><div class="prog-fill" id="prog-fill" style="width:0%" data-target="{{ pct }}"></div></div>
+    </div>
+    <div class="dash-stats">
+      <div class="ds c1"><div class="ds-icon">🔬</div><div class="ds-val">{{ escaneos|length }}</div><div class="ds-lbl">Escaneos</div></div>
+      <div class="ds c2"><div class="ds-icon">📅</div><div class="ds-val">{{ citas|length }}</div><div class="ds-lbl">Citas</div></div>
+      <div class="ds c3"><div class="ds-icon">💳</div><div class="ds-val">{{ pagos|length }}</div><div class="ds-lbl">Pagos</div></div>
+      <div class="ds c4"><div class="ds-icon">🏆</div><div class="ds-val">{{ paciente.puntos or 0 }}</div><div class="ds-lbl">Puntos</div></div>
+    </div>
+    {% if escaneos %}
+    <div class="card">
+      <div class="card-hd"><div><h2>Último análisis dental</h2><p>Escaneo más reciente con Gemini AI</p></div><button class="btn-save" style="font-size:.76rem;padding:8px 16px;" onclick="goTab('escaneos')">Ver todos →</button></div>
+      <div class="card-body">
+        {% set e = escaneos[0] %}
+        <div style="display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start;">
+          <div>{% if e.foto_base64 %}<img src="data:image/jpeg;base64,{{ e.foto_base64 }}" style="width:100%;border-radius:12px;aspect-ratio:4/3;object-fit:cover;cursor:zoom-in;border:1px solid var(--border);" onclick="openModal(this.src)" alt="">{% endif %}</div>
+          <div>
+            <span class="bd {{ e.nivel_urgencia or 'media' }}" style="margin-bottom:10px;display:inline-block;">{{ (e.nivel_urgencia or 'media').upper() }}</span>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><div style="flex:1;height:7px;background:var(--border);border-radius:50px;overflow:hidden;"><div style="height:100%;width:{{ (e.puntuacion or 5)*10 }}%;background:linear-gradient(90deg,var(--red),var(--gold),var(--g1));border-radius:50px;"></div></div><span style="font-size:.78rem;font-weight:700;">{{ e.puntuacion or 5 }}/10</span></div>
+            <p style="font-size:.82rem;color:var(--gray);line-height:1.6;">{{ e.diagnostico or 'Sin diagnóstico.' }}</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;">
+              <p style="font-size:.7rem;color:var(--gray2);">🕐 {{ e.created_at[:16] }}</p>
+              <a href="/escaneo/{{ e.id }}/pdf" target="_blank" class="btn-pdf-sm">📄 PDF</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if citas %}
+    {% set prox = citas | selectattr('estado','in',['pendiente','confirmada']) | list %}
+    {% if prox %}
+    <div class="card" style="margin-top:18px;">
+      <div class="card-hd"><div><h2>Próxima cita</h2></div></div>
+      <div class="card-body">
+        {% set c = prox[0] %}
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:var(--pearl);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;border:1px solid var(--border);">📅</div>
+          <div style="flex:1;"><p style="font-size:.9rem;font-weight:700;color:var(--c0);">{{ c.servicio }}</p><p style="font-size:.75rem;color:var(--gray);margin-top:3px;">📅 {{ c.fecha }} · 🕐 {{ c.hora }}</p></div>
+          <span class="estado-pill ep {{ c.estado }}">{{ c.estado.upper() }}</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+
+  <!-- ═══ PERFIL ═══ -->
+  <div class="tab" id="tab-perfil">
+    <div class="page-hd"><h1>Mi Perfil</h1><p>Gestiona tu información personal</p></div>
+    <div class="perfil-grid">
+      <div class="foto-card">
+        <div class="foto-wrap" onclick="document.getElementById('foto-inp').click()">
+          {% if paciente.foto_perfil %}<img src="data:image/jpeg;base64,{{ paciente.foto_perfil }}" id="foto-prev" alt="">{% else %}<span id="foto-ph">👤</span>{% endif %}
+          <div class="foto-ov">📷<span style="font-size:.62rem;margin-top:3px;">Cambiar foto</span></div>
+        </div>
+        <p class="foto-name">{{ paciente.nombre }} {{ paciente.apellido }}</p>
+        <p class="foto-email">{{ paciente.email }}</p>
+        <p class="foto-since">Desde {{ paciente.created_at[:10] }}</p>
+        <div class="foto-level {{ (paciente.nivel or 'Bronce')|lower }}">
+          {% if paciente.nivel == 'Diamante' %}💎{% elif paciente.nivel == 'Oro' %}🥇{% elif paciente.nivel == 'Plata' %}🥈{% else %}🥉{% endif %}
+          Nivel {{ paciente.nivel or 'Bronce' }} · {{ paciente.puntos or 0 }} pts
+        </div>
+        <input type="file" id="foto-inp" accept="image/*" onchange="subirFoto(this)">
+        <button class="btn-foto" onclick="document.getElementById('foto-inp').click()">📷 Cambiar foto</button>
+      </div>
+      <div class="form-card">
+        <h3>Información personal</h3>
+        <div class="fg-row">
+          <div class="fg"><label>Nombre *</label><input type="text" id="pf-n" value="{{ paciente.nombre }}"></div>
+          <div class="fg"><label>Apellido *</label><input type="text" id="pf-a" value="{{ paciente.apellido }}"></div>
+        </div>
+        <div class="fg"><label>Email</label><input type="email" value="{{ paciente.email }}" disabled style="opacity:.6;cursor:not-allowed;"></div>
+        <div class="fg-row">
+          <div class="fg"><label>Teléfono</label><input type="tel" id="pf-t" value="{{ paciente.telefono or '' }}" placeholder="9XX XXX XXX"></div>
+          <div class="fg"><label>DNI</label><input type="text" id="pf-d" value="{{ paciente.dni or '' }}" placeholder="12345678" maxlength="8"></div>
+        </div>
+        <div class="fg"><label>Fecha de nacimiento</label><input type="date" id="pf-fn" value="{{ paciente.fecha_nac or '' }}">{% if edad %}<p style="font-size:.72rem;color:var(--gray);margin-top:4px;">Edad: <strong>{{ edad }} años</strong></p>{% endif %}</div>
+        <div class="fg"><label>Sexo</label>
+          <select id="pf-sexo" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;width:100%;">
+            <option value="" {% if not paciente.sexo %}selected{% endif %}>Prefiero no decir</option>
+            <option value="M" {% if paciente.sexo == 'M' %}selected{% endif %}>Masculino</option>
+            <option value="F" {% if paciente.sexo == 'F' %}selected{% endif %}>Femenino</option>
+            <option value="Otro" {% if paciente.sexo == 'Otro' %}selected{% endif %}>Otro</option>
+          </select>
+        </div>
+        <div class="fg" style="margin-top:0;"><label>Dirección</label><input type="text" id="pf-dir" value="{{ paciente.direccion or '' }}" placeholder="Av. Ejemplo 123, Lima"></div>
+        <div class="fg"><label>Alergias / Condiciones médicas</label><input type="text" id="pf-alerg" value="{{ paciente.alergias or '' }}" placeholder="Ej: Penicilina, látex..."></div>
+        <div class="fg"><label>Tema de la interfaz</label>
+          <div class="tema-row">
+            <button class="tema-btn {{ 'sel' if (paciente.tema or 'light') == 'light' else '' }}" onclick="selTema('light',this)">☀️ Claro</button>
+            <button class="tema-btn {{ 'sel' if paciente.tema == 'dark' else '' }}" onclick="selTema('dark',this)">🌙 Oscuro</button>
+          </div>
+          <input type="hidden" id="pf-tema" value="{{ paciente.tema or 'light' }}">
+        </div>
+        <button class="btn-save" onclick="guardarPerfil()">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ESCANEOS ═══ -->
+  <div class="tab" id="tab-escaneos">
+    <div class="page-hd"><h1>Mis Escaneos Dentales</h1><p>Historial de análisis con Google Gemini AI</p></div>
+    {% if escaneos %}
+    <div class="scan-grid">
+      {% for e in escaneos %}
+      <div class="sc">
+        {% if e.foto_base64 %}<img class="sc-photo" src="data:image/jpeg;base64,{{ e.foto_base64 }}" alt="" onclick="openModal(this.src)">
+        {% else %}<div class="sc-no-photo">📷</div>{% endif %}
+        <div class="sc-body">
+          <div class="sc-hd"><span class="bd {{ e.nivel_urgencia or 'media' }}">{{ (e.nivel_urgencia or 'media').upper() }}</span><span class="sc-date">{{ e.created_at[:10] }}</span></div>
+          <div class="sc-score-row"><div class="sc-bar-w"><div class="sc-bar" style="width:{{ (e.puntuacion or 5)*10 }}%"></div></div><span class="sc-num">{{ e.puntuacion or 5 }}/10</span></div>
+          <p class="sc-diag">{{ e.diagnostico or '—' }}</p>
+          {% if e.tratamientos %}{% set trts = e.tratamientos | from_json %}{% if trts %}<div class="sc-tags">{% for t in trts[:3] %}<span class="sc-tag">{{ t.nombre }}</span>{% endfor %}{% if trts|length > 3 %}<span class="sc-tag">+{{ trts|length-3 }}</span>{% endif %}</div>{% endif %}{% endif %}
+          <div class="sc-footer"><span class="sc-date">😊 {{ e.expresion or 'neutral' }}</span><a href="/escaneo/{{ e.id }}/pdf" target="_blank" class="btn-pdf-sm">📄 PDF</a></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><div class="empty-icon">🔬</div><h3>Sin escaneos aún</h3><p>Ve a la <a href="/#detector">página principal</a> y haz tu primer análisis dental con IA gratuito.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- ═══ CITAS ═══ -->
+  <div class="tab" id="tab-citas">
+    <div class="page-hd"><h1>Mis Citas</h1><p>Historial de citas agendadas</p></div>
+    {% if citas %}
+    <div class="citas-list">
+      {% for c in citas %}
+      <div class="cita-card">
+        <div class="cita-icon">{% if c.servicio == 'Implantes Dentales' %}🦷{% elif c.servicio == 'Ortodoncia' %}😁{% elif c.servicio == 'Blanqueamiento' %}✨{% elif c.servicio == 'Limpieza Dental' %}🔬{% else %}🩺{% endif %}</div>
+        <div class="cita-info">
+          <p class="cita-svc">{{ c.servicio }}</p>
+          <p class="cita-meta">📅 {{ c.fecha }} · 🕐 {{ c.hora }}</p>
+          {% if c.motivo %}<p class="cita-motivo">{{ c.motivo }}</p>{% endif %}
+          {% if c.notas_doctor %}<p style="font-size:.73rem;color:var(--b2);margin-top:2px;">📋 Doctor: {{ c.notas_doctor }}</p>{% endif %}
+        </div>
+        <div class="cita-estado"><span class="estado-pill ep {{ c.estado }}">{{ c.estado.upper() }}</span><p style="font-size:.68rem;color:var(--gray2);margin-top:4px;">#{{ c.id }}</p></div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><div class="empty-icon">📅</div><h3>Sin citas agendadas</h3><p><a href="/#citas">Agenda tu primera cita</a> y gana 30 puntos.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- ═══ PAGOS ═══ -->
+  <div class="tab" id="tab-pagos">
+    <div class="page-hd"><h1>Mis Pagos</h1><p>Historial de pagos y reservas</p></div>
+    {% if pagos %}
+    <div class="pagos-list">
+      {% for p in pagos %}
+      <div class="pago-card2">
+        <div class="pago-met-icon {{ p.metodo }}">{% if p.metodo == 'yape' %}💜{% elif p.metodo == 'plin' %}🔵{% elif p.metodo == 'transferencia' %}🏦{% else %}💵{% endif %}</div>
+        <div class="pago-info2">
+          <p class="pago-svc">{{ p.servicio }}</p>
+          <p class="pago-meta2">{{ p.metodo.upper() }} · {{ p.created_at[:10] }}{% if p.referencia %} · Ref: {{ p.referencia }}{% endif %}</p>
+          {% if p.notas %}<p style="font-size:.72rem;color:var(--gray2);">📝 {{ p.notas }}</p>{% endif %}
+        </div>
+        {% if p.captura_b64 %}<img src="data:image/jpeg;base64,{{ p.captura_b64 }}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;cursor:zoom-in;border:1px solid var(--border);" onclick="openModal(this.src)">{% endif %}
+        <div>
+          <p class="pago-monto2">S/ {{ '%.2f'|format(p.monto) }}</p>
+          <div class="pago-estado2"><span class="pe {{ p.estado }}">{{ p.estado.upper() }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><div class="empty-icon">💳</div><h3>Sin pagos registrados</h3><p>Tus pagos y reservas aparecerán aquí.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- ═══ CHAT ═══ -->
+  <div class="tab" id="tab-chat">
+    <div class="page-hd"><h1>Asistente Covi</h1><p>Chat inteligente · Powered by Groq llama-3.3-70b</p></div>
+    <div class="chat-wrap">
+      <div class="chat-hd">
+        <div class="chat-hd-info">
+          <div class="chat-av">🦷</div>
+          <div class="chat-ht"><h3>Covi — Asistente COVIDEN</h3><p><span class="online"></span>En línea · Groq AI</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="chat-provider">⚡ Groq</span>
+          <button class="btn-clear-chat" onclick="clearChat()">🗑 Limpiar</button>
+        </div>
+      </div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-inp">
+        <input class="chat-field" id="chat-field" placeholder="Pregúntale a Covi sobre precios, citas, horarios..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="chat-send" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ HISTORIAL CLÍNICO ═══ -->
+  <div class="tab" id="tab-historial">
+    <div class="page-hd"><h1>Mi Historial Clínico</h1><p>Registros médico-dentales creados por el Dr. Sergio Castillo</p></div>
+    {% if historial %}
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      {% for h in historial %}
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <span style="background:var(--pearl);border:1px solid var(--border);border-radius:50px;padding:4px 14px;font-size:.72rem;font-weight:700;color:var(--b2);">{{ h.tipo or 'Consulta' }}</span>
+            <span style="font-size:.78rem;color:var(--gray);margin-left:10px;">📅 {{ h.fecha or '—' }}</span>
+            <span style="font-size:.73rem;color:var(--gray2);margin-left:8px;">Dr. {{ h.creado_por or 'Sergio Castillo' }}</span>
+          </div>
+          {% if h.proxima_cita %}<span style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;border-radius:50px;padding:3px 12px;font-size:.7rem;font-weight:600;">📅 Próxima: {{ h.proxima_cita }}</span>{% endif %}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          {% if h.diagnostico %}<div><p style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Diagnóstico</p><p style="font-size:.82rem;color:var(--c0);line-height:1.55;">{{ h.diagnostico }}</p></div>{% endif %}
+          {% if h.tratamiento_realizado %}<div><p style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Tratamiento Realizado</p><p style="font-size:.82rem;color:var(--c0);line-height:1.55;">{{ h.tratamiento_realizado }}</p></div>{% endif %}
+          {% if h.medicamentos %}<div><p style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Medicamentos</p><p style="font-size:.82rem;color:var(--c0);line-height:1.55;">{{ h.medicamentos }}</p></div>{% endif %}
+          {% if h.odontograma %}<div><p style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Piezas Tratadas</p><p style="font-size:.82rem;color:var(--c0);">{{ h.odontograma }}</p></div>{% endif %}
+          {% if h.observaciones %}<div style="grid-column:1/-1;"><p style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Observaciones</p><p style="font-size:.82rem;color:var(--gray);line-height:1.55;font-style:italic;">{{ h.observaciones }}</p></div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><div class="empty-icon">📋</div><h3>Sin registros clínicos aún</h3><p>El Dr. Castillo irá completando tu historial después de cada visita.</p></div>
+    {% endif %}
+  </div>
+
+</div><!-- /main -->
+
+<!-- Modal -->
+<div class="modal-bg" id="modal" onclick="closeModal()"><button class="modal-close" onclick="closeModal()">✕</button><img class="modal-img" id="modal-img" src="" alt=""></div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── TABS ── */
+function goTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  if(btn) btn.classList.add('on');
+  else { const nb=document.getElementById('nav-'+name); if(nb) nb.classList.add('on'); }
+  if(name==='chat'&&chatHist.length===0) initChat();
+}
+
+/* ── PROGRESS BAR ── */
+window.addEventListener('load',()=>{
+  const pf=document.getElementById('prog-fill');
+  if(pf){setTimeout(()=>{pf.style.width=pf.dataset.target+'%';},400);}
+});
+
+/* ── MODAL ── */
+function openModal(src){document.getElementById('modal-img').src=src;document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ── TOAST ── */
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+/* ── NOTIFS ── */
+async function markNotifs(){
+  await fetch('/mi-cuenta/marcar-notif',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+  document.getElementById('notif-bar').style.display='none';
+}
+
+/* ── FOTO ── */
+async function subirFoto(inp){
+  const file=inp.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const b64=e.target.result;
+    let prev=document.getElementById('foto-prev');
+    if(!prev){prev=document.createElement('img');prev.id='foto-prev';const ph=document.getElementById('foto-ph');if(ph)ph.replaceWith(prev);else document.querySelector('.foto-wrap').prepend(prev);}
+    prev.src=b64;prev.style.cssText='width:100%;height:100%;object-fit:cover;';
+    // Sidebar
+    let sbImg=document.getElementById('sb-av-img');
+    if(!sbImg){const sbTxt=document.getElementById('sb-av-txt');if(sbTxt){sbImg=document.createElement('img');sbImg.id='sb-av-img';sbTxt.replaceWith(sbImg);}}
+    if(sbImg){sbImg.src=b64;sbImg.style.cssText='width:100%;height:100%;object-fit:cover;';}
+    const r=await fetch('/mi-cuenta/foto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({foto:b64})}).then(x=>x.json());
+    showToast(r.ok?'✅ Foto actualizada':'❌ Error al guardar');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ── PERFIL ── */
+let temaSel='{{ paciente.tema or "light" }}';
+function selTema(t,el){temaSel=t;document.querySelectorAll('.tema-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');document.getElementById('pf-tema').value=t;}
+async function guardarPerfil(){
+  const d={
+    nombre:   document.getElementById('pf-n').value.trim(),
+    apellido: document.getElementById('pf-a').value.trim(),
+    telefono: document.getElementById('pf-t').value.trim(),
+    dni:      document.getElementById('pf-d').value.trim(),
+    fecha_nac:document.getElementById('pf-fn').value,
+    sexo:     document.getElementById('pf-sexo')?.value||'',
+    direccion:document.getElementById('pf-dir')?.value.trim()||'',
+    alergias: document.getElementById('pf-alerg')?.value.trim()||'',
+    tema:     document.getElementById('pf-tema').value
+  };
+  const r=await fetch('/mi-cuenta/perfil',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(x=>x.json());
+  showToast(r.ok?'✅ Perfil actualizado':'❌ Error al guardar');
+}
+
+/* ── NOTIFICACIONES ── */
+function toggleNotifDrop(){
+  const drop=document.getElementById('notif-drop');
+  if(drop) drop.style.display=drop.style.display==='none'?'block':'none';
+}
+async function marcarNotifId(nid,btn){
+  await fetch('/mi-cuenta/marcar-notif',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:nid})});
+  const row=btn.closest('div[style]');if(row)row.style.opacity='.35';
+  btn.textContent='✓'; btn.disabled=true;
+}
+async function markNotifs(){
+  await fetch('/mi-cuenta/marcar-notif',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+  const bar=document.getElementById('notif-bar-main');if(bar)bar.style.display='none';
+  const drop=document.getElementById('notif-drop');if(drop)drop.style.display='none';
+}
+// Cerrar dropdown al click fuera
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('notif-wrap');
+  if(wrap&&!wrap.contains(e.target)){const drop=document.getElementById('notif-drop');if(drop)drop.style.display='none';}
+});
+// Polling de notificaciones cada 45 segundos
+setInterval(async()=>{
+  try{
+    const r=await fetch('/mi-cuenta/notificaciones').then(x=>x.json());
+    const badge=document.getElementById('notif-badge');
+    if(r.count>0&&badge){badge.textContent=r.count;badge.style.display='inline';}
+  }catch(e){}
+},45000);
+
+
+/* ── CHAT ── */
+let chatHist=[],chatTyping=false;
+function initChat(){
+  addBot(`¡Hola **{{ paciente.nombre }}**! 😊 Soy **Covi**, tu asistente dental de COVIDEN.\n\nTienes **{{ paciente.puntos or 0 }} puntos** y nivel **{{ paciente.nivel or 'Bronce' }}** 🏆\n\n¿En qué te puedo ayudar?`,true);
+}
+function addBot(txt,quick=false){
+  const c=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='cmsg b';
+  const fmt=txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const now=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  d.innerHTML=`<div class="c-av">🦷</div><div><div class="cbub">${fmt}</div><div class="c-time">${now}</div>${quick?`<div class="qr-row"><button class="qr" onclick="sendQ(this,'¿Cuáles son los precios?')">💰 Precios</button><button class="qr" onclick="sendQ(this,'Quiero agendar una cita')">📅 Cita</button><button class="qr" onclick="sendQ(this,'¿Cuántos puntos tengo?')">🏆 Puntos</button><button class="qr" onclick="sendQ(this,'¿Cuál es el horario de atención?')">🕐 Horario</button><button class="qr" onclick="sendQ(this,'¿Cómo pago con Yape?')">💜 Yape</button></div>`:''}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function addUser(txt){
+  const c=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='cmsg u';
+  const now=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  {% if paciente.foto_perfil %}
+  const avHtml=`<div class="c-av"><img src="data:image/jpeg;base64,{{ paciente.foto_perfil }}" style="width:100%;height:100%;object-fit:cover;" alt=""></div>`;
+  {% else %}
+  const avHtml=`<div class="c-av">👤</div>`;
+  {% endif %}
+  d.innerHTML=`${avHtml}<div><div class="cbub">${txt}</div><div class="c-time">${now}</div></div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function showTyping(){const c=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='cmsg b';d.id='typ';d.innerHTML=`<div class="c-av">🦷</div><div class="cbub"><div class="typ-ind"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function rmTyping(){const t=document.getElementById('typ');if(t)t.remove();}
+function sendQ(btn,txt){btn.closest('.qr-row').querySelectorAll('.qr').forEach(b=>b.disabled=true);processMsg(txt);}
+async function sendMsg(){const f=document.getElementById('chat-field');const txt=f.value.trim();if(!txt||chatTyping)return;f.value='';processMsg(txt);}
+async function processMsg(txt){
+  if(chatTyping)return;chatTyping=true;
+  addUser(txt);chatHist.push({role:'user',content:txt});showTyping();
+  try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHist})}).then(x=>x.json());
+    chatHist.push({role:'assistant',content:r.reply});rmTyping();addBot(r.reply);}
+  catch(e){rmTyping();addBot('Error temporal. Llámanos: (01) 123-4567');}
+  chatTyping=false;
+}
+function clearChat(){chatHist=[];document.getElementById('chat-msgs').innerHTML='';initChat();}
+</script>
+</body>
+</html>
+

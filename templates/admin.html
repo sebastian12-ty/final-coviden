@@ -1,0 +1,976 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — COVIDEN Dental v4.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --c0:#050e27;--c1:#0c1e4a;--c2:#162d6b;
+  --b1:#1d4ed8;--b2:#2563eb;--s1:#0ea5e9;--s2:#38bdf8;
+  --g1:#10b981;--g2:#34d399;--gold:#f59e0b;
+  --red:#ef4444;--orange:#f97316;--purple:#7c3aed;
+  --pearl:#f0f6ff;--snow:#f8faff;--white:#fff;
+  --border:#dde8f7;--gray:#64748b;--gray2:#94a3b8;
+  --ff:'Inter',sans-serif;--ffh:'Playfair Display',serif;
+  --sb:258px;--shadow:0 4px 20px rgba(5,14,39,.08);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--ff);background:var(--snow);color:var(--c0);display:flex;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+button{font-family:var(--ff);cursor:pointer;border:none;}
+
+/* ═══ SIDEBAR ═══ */
+.sb{width:var(--sb);background:var(--c0);min-height:100vh;position:fixed;top:0;left:0;
+  display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.06);z-index:100;}
+.sb-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo{font-family:var(--ffh);color:var(--white);font-size:1.35rem;font-weight:900;}
+.sb-logo em{color:var(--s2);font-style:normal;}
+.sb-tagline{color:rgba(255,255,255,.28);font-size:.64rem;letter-spacing:.5px;text-transform:uppercase;margin-top:3px;}
+.sb-ai{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;}
+.ai-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:var(--s2);font-size:.58rem;font-weight:700;padding:2px 9px;border-radius:50px;letter-spacing:.4px;}
+.sb-nav{padding:10px 0;flex:1;overflow-y:auto;}
+.sb-nav::-webkit-scrollbar{width:3px;}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+.sb-grp-lbl{font-size:.58rem;font-weight:700;color:rgba(255,255,255,.18);letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px 5px;}
+.sb-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;background:none;color:rgba(255,255,255,.5);font-size:.81rem;font-weight:500;text-align:left;font-family:var(--ff);transition:all .2s;border-left:3px solid transparent;}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.88);}
+.sb-item.on{background:rgba(14,165,233,.1);color:var(--s2);border-left-color:var(--s2);padding-left:15px;}
+.sb-icon{font-size:.98rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-cnt{margin-left:auto;background:rgba(56,189,248,.15);color:var(--s2);font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:50px;}
+.sb-cnt.red{background:rgba(239,68,68,.15);color:#f87171;}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-foot a{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.28);font-size:.78rem;transition:color .2s;}
+.sb-foot a:hover{color:var(--s2);}
+
+/* ═══ TOPBAR ═══ */
+.topbar{position:fixed;top:0;left:var(--sb);right:0;height:62px;background:rgba(248,250,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 36px;z-index:90;box-shadow:0 2px 12px rgba(5,14,39,.06);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.tb-title{font-family:var(--ffh);font-size:1.2rem;color:var(--c0);font-weight:700;}
+.tb-breadcrumb{font-size:.76rem;color:var(--gray);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.tb-stat{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:.75rem;color:var(--gray);}
+.tb-stat strong{color:var(--c0);font-weight:700;}
+.tb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--b2));display:flex;align-items:center;justify-content:center;font-size:1rem;border:2px solid var(--border);}
+
+/* ═══ MAIN ═══ */
+.main{margin-left:var(--sb);margin-top:62px;flex:1;width:calc(100vw - var(--sb));max-width:1480px;padding:28px 36px;}
+
+/* ═══ PAGE HEADER ═══ */
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
+.phd-left h1{font-family:var(--ffh);font-size:1.8rem;color:var(--c0);}
+.phd-left p{font-size:.82rem;color:var(--gray);margin-top:3px;}
+.export-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.exp-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:50px;font-size:.75rem;font-weight:700;letter-spacing:.3px;transition:all .25s;cursor:pointer;}
+.exp-pdf{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.exp-pdf:hover{background:#991b1b;color:var(--white);}
+.exp-xlsx{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.exp-xlsx:hover{background:#065f46;color:var(--white);}
+
+/* ═══ TABS ═══ */
+.tab{display:none;animation:tabIn .3s ease;}
+.tab.on{display:block;}
+@keyframes tabIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ═══ STATS GRID ═══ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px;}
+.stat{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 18px;position:relative;overflow:hidden;transition:transform .3s var(--spring);}
+.stat:hover{transform:translateY(-3px);}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;}
+.stat.sblue{--ac:var(--b2);}  .stat.sg{--ac:var(--g1);}
+.stat.ss{--ac:var(--s1);}  .stat.sgo{--ac:var(--gold);}
+.stat.sr{--ac:var(--red);} .stat.sp{--ac:var(--purple);}
+.stat::before{background:var(--ac);}
+.s-icon{font-size:1.5rem;margin-bottom:7px;}
+.s-val{font-family:var(--ffh);font-size:2rem;font-weight:900;color:var(--ac);line-height:1;}
+.s-lbl{font-size:.69rem;color:var(--gray);margin-top:4px;font-weight:500;}
+.s-sub{font-size:.64rem;color:var(--gray2);margin-top:2px;}
+/* Trend badge */
+.s-trend{position:absolute;top:12px;right:12px;font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:50px;}
+.s-trend.up{background:#d1fae5;color:#065f46;}
+.s-trend.warn{background:#fef3c7;color:#92400e;}
+
+/* ═══ CHART CARDS ═══ */
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px;}
+.chart-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
+.chart-row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;}
+.chart-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 22px;}
+.cc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cc-title{font-size:.86rem;font-weight:700;color:var(--c1);display:flex;align-items:center;gap:7px;}
+.cc-sub{font-size:.7rem;color:var(--gray);}
+
+/* ═══ TABLE CARDS ═══ */
+.tbl-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.tbl-hd{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tbl-hd-l h3{font-size:.92rem;font-weight:700;color:var(--c1);}
+.tbl-hd-l p{font-size:.72rem;color:var(--gray);margin-top:2px;}
+.tbl-hd-r{display:flex;gap:8px;align-items:center;}
+.tbl-cnt{background:var(--pearl);color:var(--gray);font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:50px;border:1px solid var(--border);}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--pearl);padding:10px 14px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
+tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s;}
+tbody tr:hover{background:#fafcff;}
+tbody tr:last-child{border-bottom:none;}
+td{padding:12px 14px;font-size:.81rem;color:var(--c0);vertical-align:middle;}
+.td-sm{font-size:.72rem;color:var(--gray2);}
+
+/* Badges */
+.bd{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.63rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+.bd.baja{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.bd.media{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.bd.alta{background:#ffedd5;color:#9a3412;border:1px solid #fdba74;}
+.bd.urgente{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.bd.pendiente{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.bd.confirmado,.bd.confirmada{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.bd.rechazado,.bd.cancelada{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.bd.completada{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd;}
+.bd.bronce{background:#fff7ed;color:#c2855a;}
+.bd.plata{background:#f9fafb;color:#6b7280;}
+.bd.oro{background:#fffbeb;color:#d97706;}
+.bd.diamante{background:#f5f3ff;color:#7c3aed;}
+/* Stars */
+.stars{color:var(--gold);font-size:.88rem;}
+
+/* Action buttons */
+.acts{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.abtn{padding:5px 12px;border-radius:8px;font-size:.69rem;font-weight:700;transition:all .2s;white-space:nowrap;}
+.abtn.conf{background:#d1fae5;color:#065f46;}.abtn.conf:hover{background:#065f46;color:var(--white);}
+.abtn.rech{background:#fee2e2;color:#991b1b;}.abtn.rech:hover{background:#991b1b;color:var(--white);}
+.abtn.comp{background:#e0f2fe;color:#0369a1;}.abtn.comp:hover{background:#0369a1;color:var(--white);}
+.abtn.del{background:#f1f5f9;color:var(--gray);}.abtn.del:hover{background:#fee2e2;color:var(--red);}
+
+/* ═══ SCAN GRID ═══ */
+.scan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:20px;}
+.sc-card{background:var(--snow);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:all .35s var(--spring);}
+.sc-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(5,14,39,.12);}
+.sc-photo{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:zoom-in;border-bottom:1px solid var(--border);transition:opacity .2s;}
+.sc-photo:hover{opacity:.9;}
+.sc-no-photo{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,var(--c0),var(--c1));display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:rgba(255,255,255,.18);border-bottom:1px solid var(--border);}
+.sc-body{padding:14px 16px;}
+.sc-hd2{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:6px;}
+.sc-name{font-size:.88rem;font-weight:700;color:var(--c0);}
+.sc-contact{font-size:.69rem;color:var(--gray);margin-top:2px;line-height:1.4;}
+.sc-dt{font-size:.66rem;color:var(--gray2);margin-top:2px;}
+.sc-score-r{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sc-bar-w{flex:1;height:6px;background:var(--border);border-radius:50px;overflow:hidden;}
+.sc-bar-f{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--red),var(--gold),var(--g1));}
+.sc-snum{font-size:.73rem;font-weight:700;color:var(--c1);}
+.sc-diag2{font-size:.75rem;color:var(--gray);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;}
+.sc-tags2{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.sc-tag2{background:var(--pearl);border:1px solid var(--border);color:var(--c1);font-size:.6rem;font-weight:600;padding:2px 8px;border-radius:50px;}
+.sc-footer2{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);}
+
+/* ═══ PAC GRID ═══ */
+.pac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:20px;}
+.pac-card2{background:var(--snow);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;box-shadow:var(--shadow);transition:all .3s var(--spring);}
+.pac-card2:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(5,14,39,.1);}
+.pac-av2{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--b2));display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 12px;border:2px solid var(--border);overflow:hidden;}
+.pac-av2 img{width:100%;height:100%;object-fit:cover;}
+.pac-name2{font-size:.9rem;font-weight:700;color:var(--c0);}
+.pac-email2{font-size:.71rem;color:var(--gray);margin-top:2px;}
+.pac-tel2{font-size:.71rem;color:var(--gray2);margin-top:2px;}
+.pac-stats-row{display:flex;justify-content:center;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.pac-stat2{text-align:center;}
+.pac-stat2 strong{font-size:.82rem;font-weight:700;color:var(--c0);display:block;}
+.pac-stat2 span{font-size:.64rem;color:var(--gray);}
+.pac-footer2{margin-top:12px;display:flex;justify-content:center;gap:8px;}
+
+/* ═══ INVENTARIO ═══ */
+.inv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.btn-add-inv{background:var(--b2);color:var(--white);padding:9px 18px;border-radius:50px;font-size:.79rem;font-weight:600;transition:all .25s;}
+.btn-add-inv:hover{background:var(--s1);transform:translateY(-1px);}
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.inv-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow);transition:all .3s;}
+.inv-card:hover{border-color:var(--b2);}
+.inv-card.low{border-color:var(--red);background:#fff8f8;}
+.inv-name{font-size:.88rem;font-weight:700;color:var(--c0);margin-bottom:3px;}
+.inv-cat{font-size:.69rem;color:var(--gray);margin-bottom:10px;}
+.inv-qty-row{display:flex;align-items:center;justify-content:space-between;}
+.inv-qty{font-family:var(--ffh);font-size:1.8rem;font-weight:900;color:var(--c0);line-height:1;}
+.inv-unit{font-size:.7rem;color:var(--gray);margin-top:2px;}
+.inv-low-badge{background:#fee2e2;color:#991b1b;font-size:.64rem;font-weight:700;padding:2px 8px;border-radius:50px;border:1px solid #fca5a5;}
+.inv-actions{display:flex;gap:6px;margin-top:10px;}
+.inv-btn{padding:6px 12px;border-radius:8px;font-size:.7rem;font-weight:700;transition:all .2s;}
+.inv-plus{background:#d1fae5;color:#065f46;}.inv-plus:hover{background:#065f46;color:var(--white);}
+.inv-minus{background:#fee2e2;color:#991b1b;}.inv-minus:hover{background:#991b1b;color:var(--white);}
+.inv-del{background:#f1f5f9;color:var(--gray);margin-left:auto;}.inv-del:hover{background:#fee2e2;color:var(--red);}
+
+/* ═══ MODAL ═══ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;animation:mIn .2s ease;}
+@keyframes mIn{from{opacity:0;}to{opacity:1;}}
+.modal-img{max-width:90vw;max-height:88vh;border-radius:16px;object-fit:contain;}
+.modal-close{position:fixed;top:18px;right:22px;background:rgba(255,255,255,.1);border:none;color:var(--white);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.modal-close:hover{background:rgba(255,255,255,.2);}
+/* Add inventory modal */
+.modal-form{background:var(--white);border-radius:20px;padding:36px;width:100%;max-width:480px;}
+.modal-form h3{font-family:var(--ffh);font-size:1.3rem;color:var(--c0);margin-bottom:20px;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-size:.67rem;font-weight:700;color:var(--c1);letter-spacing:.4px;text-transform:uppercase;}
+.fg input,.fg select{padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;color:var(--c0);outline:none;transition:all .2s;width:100%;}
+.fg input:focus,.fg select:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.fg-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-modal-save{background:linear-gradient(135deg,var(--b1),var(--b2));color:var(--white);padding:12px 28px;border-radius:50px;font-size:.88rem;font-weight:700;transition:all .3s;margin-right:8px;}
+.btn-modal-save:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(29,78,216,.35);}
+.btn-modal-cancel{background:var(--pearl);color:var(--gray);border:1px solid var(--border);padding:12px 20px;border-radius:50px;font-size:.85rem;}
+
+/* ═══ TOAST ═══ */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--c0);color:var(--white);padding:12px 22px;border-radius:50px;font-size:.82rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:all .35s var(--spring);z-index:9999;transform:translateY(80px);opacity:0;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{background:var(--g1);}
+.toast.err{background:var(--red);}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1200px){.chart-row3{grid-template-columns:1fr 1fr;}.chart-row{grid-template-columns:1fr;}}
+@media(max-width:900px){
+  .sb{width:58px;}.sb-logo,.sb-tagline,.sb-ai,.sb-grp-lbl,.sb-item span:not(.sb-icon),.sb-cnt,.sb-foot a span{display:none;}
+  .sb-item{justify-content:center;padding:11px;}.main{margin-left:58px;width:calc(100vw - 58px);max-width:none;padding:20px 14px;}
+  .topbar{left:58px;}.chart-row3{grid-template-columns:1fr;}.chart-row2{grid-template-columns:1fr;}
+  .scan-grid,.pac-grid,.inv-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sb">
+  <div class="sb-brand">
+    <div class="sb-logo">COVI<em>DEN</em></div>
+    <p class="sb-tagline">Panel Administrativo v4.0</p>
+    <div class="sb-ai">
+      <span class="ai-badge">🔬 Gemini</span>
+      <span class="ai-badge">⚡ Groq</span>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <p class="sb-grp-lbl">Panel</p>
+    <button class="sb-item on" onclick="goTab('dashboard',this)"><span class="sb-icon">📊</span><span>Dashboard</span></button>
+    <p class="sb-grp-lbl">Gestión</p>
+    <button class="sb-item" onclick="goTab('pacientes',this)"><span class="sb-icon">👥</span><span>Pacientes</span><span class="sb-cnt">{{ t_pac }}</span></button>
+    <button class="sb-item" onclick="goTab('escaneos',this)"><span class="sb-icon">🔬</span><span>Escaneos IA</span><span class="sb-cnt">{{ t_scan }}</span></button>
+    <button class="sb-item" onclick="goTab('citas',this)"><span class="sb-icon">📅</span><span>Citas</span><span class="sb-cnt {{ 'red' if pend_c > 0 else '' }}">{{ t_citas }}</span></button>
+    <button class="sb-item" onclick="goTab('pagos',this)"><span class="sb-icon">💳</span><span>Pagos</span><span class="sb-cnt {{ 'red' if pend_p > 0 else '' }}">{{ t_pago }}</span></button>
+    <button class="sb-item" onclick="goTab('resenas',this)"><span class="sb-icon">⭐</span><span>Reseñas</span><span class="sb-cnt">{{ t_res }}</span></button>
+    <button class="sb-item" onclick="goTab('inventario',this)"><span class="sb-icon">📦</span><span>Inventario</span>{% if inv_bajo > 0 %}<span class="sb-cnt red">{{ inv_bajo }}</span>{% endif %}</button>
+    <button class="sb-item" onclick="goTab('historial',this)"><span class="sb-icon">📋</span><span>Historial Clínico</span><span class="sb-cnt">{{ t_hist }}</span></button>
+    <button class="sb-item" onclick="goTab('cumpleanos',this)"><span class="sb-icon">🎂</span><span>Cumpleaños</span>{% if cumpleaneros_hoy %}<span class="sb-cnt red">{{ cumpleaneros_hoy|length }}</span>{% endif %}</button>
+    <p class="sb-grp-lbl">Reportes</p>
+    <button class="sb-item" onclick="goTab('reportes',this)"><span class="sb-icon">📄</span><span>Exportar</span></button>
+    <p class="sb-grp-lbl">Seguridad</p>
+    <button class="sb-item" onclick="goTab('config',this)"><span class="sb-icon">🔐</span><span>API Keys</span></button>
+    <p class="sb-grp-lbl">Base de Datos</p>
+    <a class="sb-item" href="/admin/ver-bd" target="_blank"><span class="sb-icon">🗃️</span><span>Ver BD</span></a>
+    <a class="sb-item" href="/admin/backup-db"><span class="sb-icon">⬇️</span><span>Backup DB</span></a>
+    <p class="sb-grp-lbl">Sitio</p>
+    <a class="sb-item" href="/" target="_blank"><span class="sb-icon">🌐</span><span>Ver Sitio</span></a>
+  </div>
+  <div class="sb-foot"><a href="/admin/logout"><span class="sb-icon">🔓</span><span>Cerrar sesión</span></a></div>
+</nav>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="tb-title" id="tb-title">Dashboard</div>
+    <div class="tb-breadcrumb">COVIDEN Dental · Admin</div>
+  </div>
+  <div class="topbar-right">
+    <div class="tb-stat">Gemini <strong>{{ gemini_model }}</strong></div>
+    <div class="tb-stat">Groq <strong>{{ groq_model[:20] }}</strong></div>
+    <div class="tb-avatar">👨‍⚕️</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="tab on" id="tab-dashboard">
+    <div class="page-hd"><div class="phd-left"><h1>Dashboard General</h1><p>Resumen completo del sistema COVIDEN Dental</p></div></div>
+    <div class="stats">
+      <div class="stat sblue"><div class="s-trend up">↑ Activo</div><div class="s-icon">👥</div><div class="s-val">{{ t_pac }}</div><div class="s-lbl">Pacientes</div></div>
+      <div class="stat ss"><div class="s-icon">🔬</div><div class="s-val">{{ t_scan }}</div><div class="s-lbl">Escaneos IA</div><div class="s-sub">Hoy: {{ hoy }}</div></div>
+      <div class="stat sg"><div class="s-icon">💰</div><div class="s-val">S/{{ '%.0f'|format(ingresos) }}</div><div class="s-lbl">Ingresos</div></div>
+      <div class="stat sgo"><div class="s-trend warn">{{ pend_p }} pendientes</div><div class="s-icon">💳</div><div class="s-val">{{ t_pago }}</div><div class="s-lbl">Pagos</div></div>
+      <div class="stat sr"><div class="s-icon">⚡</div><div class="s-val">{{ urg_alt }}</div><div class="s-lbl">Alta urgencia</div></div>
+      <div class="stat sp"><div class="s-icon">📅</div><div class="s-val">{{ t_citas }}</div><div class="s-lbl">Citas</div><div class="s-sub">Pendientes: {{ pend_c }}</div></div>
+      <div class="stat"><div class="s-icon">⭐</div><div class="s-val">{{ avg_star }}</div><div class="s-lbl">Rating prom.</div></div>
+      <div class="stat"><div class="s-icon">💯</div><div class="s-val">{{ avg_scan }}</div><div class="s-lbl">Score prom.</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">📈 Escaneos diarios (14 días)</span></div><canvas id="ch-dias" height="72"></canvas></div>
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">⚡ Nivel de urgencia</span></div><canvas id="ch-urg" height="180"></canvas></div>
+    </div>
+    <div class="chart-row3">
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">💳 Métodos de pago</span></div><canvas id="ch-met" height="180"></canvas></div>
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">📋 Estado de pagos</span></div><canvas id="ch-est" height="180"></canvas></div>
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">⭐ Reseñas</span></div><canvas id="ch-stars" height="180"></canvas></div>
+    </div>
+    <div class="chart-row2">
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">👥 Nuevos pacientes (14 días)</span></div><canvas id="ch-pac" height="72"></canvas></div>
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">🦷 Servicios más solicitados</span></div><canvas id="ch-svc" height="180"></canvas></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">💰 Ingresos diarios confirmados</span></div><canvas id="ch-ing" height="72"></canvas></div>
+      <div class="chart-card"><div class="cc-hd"><span class="cc-title">😊 Expresiones detectadas</span></div><canvas id="ch-expr" height="180"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ══ PACIENTES ══ -->
+  <div class="tab" id="tab-pacientes">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Pacientes</h1><p>{{ t_pac }} pacientes registrados</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/pacientes" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/pacientes" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    {% if pacientes %}
+    <div class="pac-grid">
+      {% for p in pacientes %}
+      <div class="pac-card2">
+        <div class="pac-av2">
+          {% if p.foto_perfil %}<img src="data:image/jpeg;base64,{{ p.foto_perfil }}" alt="">{% else %}👤{% endif %}
+        </div>
+        <p class="pac-name2">{{ p.nombre }} {{ p.apellido }}</p>
+        <p class="pac-email2">{{ p.email }}</p>
+        {% if p.telefono %}<p class="pac-tel2">📞 {{ p.telefono }}</p>{% endif %}
+        <div class="pac-stats-row">
+          <div class="pac-stat2"><strong>{{ p.puntos or 0 }}</strong><span>puntos</span></div>
+          <div class="pac-stat2"><strong><span class="bd {{ (p.nivel or 'Bronce')|lower }}">{{ p.nivel or 'Bronce' }}</span></strong><span>nivel</span></div>
+          <div class="pac-stat2"><strong>{{ p.created_at[:10] }}</strong><span>registro</span></div>
+        </div>
+        <div class="pac-footer2">
+          <form method="POST" action="/admin/paciente/{{ p.id }}/delete" onsubmit="return confirm('¿Eliminar paciente {{ p.nombre }}?')" style="display:contents;">
+            <button type="submit" class="abtn del">🗑 Eliminar</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:70px;color:var(--gray);"><div style="font-size:3rem;margin-bottom:12px;">👥</div><p style="font-weight:600;color:var(--c1);">Sin pacientes registrados</p></div>
+    {% endif %}
+  </div>
+
+  <!-- ══ ESCANEOS ══ -->
+  <div class="tab" id="tab-escaneos">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Escaneos Dentales IA</h1><p>Análisis con Google Gemini · {{ t_scan }} escaneos registrados</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/escaneos" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/escaneos" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    {% if escaneos %}
+    <div class="scan-grid">
+      {% for e in escaneos %}
+      <div class="sc-card">
+        {% if e.foto_base64 %}
+        <img class="sc-photo" src="data:image/jpeg;base64,{{ e.foto_base64 }}" alt="" onclick="openModal(this.src)" title="Clic para ampliar">
+        {% else %}<div class="sc-no-photo">📷</div>{% endif %}
+        <div class="sc-body">
+          <div class="sc-hd2">
+            <div>
+              <p class="sc-name">{{ e.pac_nombre or e.nombre_libre or 'Anónimo' }}{% if e.pac_apellido %} {{ e.pac_apellido }}{% endif %}</p>
+              <p class="sc-contact">{% if e.email_libre %}📧 {{ e.email_libre }}{% endif %}{% if e.telefono_libre %}<br>📞 {{ e.telefono_libre }}{% endif %}</p>
+              <p class="sc-dt">🕐 {{ e.created_at[:16] }}</p>
+            </div>
+            <span class="bd {{ e.nivel_urgencia or 'media' }}">{{ (e.nivel_urgencia or 'media').upper() }}</span>
+          </div>
+          <div class="sc-score-r">
+            <div class="sc-bar-w"><div class="sc-bar-f" style="width:{{ (e.puntuacion or 5)*10 }}%"></div></div>
+            <span class="sc-snum">{{ e.puntuacion or 5 }}/10</span>
+          </div>
+          {% if e.diagnostico %}<p class="sc-diag2">{{ e.diagnostico }}</p>{% endif %}
+          {% if e.tratamientos %}
+          {% set trts = e.tratamientos | from_json %}
+          {% if trts %}<div class="sc-tags2">{% for t in trts[:3] %}<span class="sc-tag2">{{ t.nombre }}</span>{% endfor %}{% if trts|length > 3 %}<span class="sc-tag2">+{{ trts|length-3 }}</span>{% endif %}</div>{% endif %}
+          {% endif %}
+          <div class="sc-footer2">
+            <span class="td-sm">#{{ e.id }} · {{ e.expresion or '—' }}</span>
+            <div style="display:flex;gap:6px;">
+              <a href="/escaneo/{{ e.id }}/pdf" target="_blank" class="abtn" style="background:#fee2e2;color:#991b1b;">📄 PDF</a>
+              <form method="POST" action="/admin/escaneo/{{ e.id }}/delete" onsubmit="return confirm('¿Eliminar escaneo #{{ e.id }}?')" style="display:contents;">
+                <button type="submit" class="abtn del">🗑</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:70px;color:var(--gray);"><div style="font-size:3.5rem;margin-bottom:12px;">🔬</div><p style="font-weight:600;color:var(--c1);">Sin escaneos registrados</p></div>
+    {% endif %}
+  </div>
+
+  <!-- ══ CITAS ══ -->
+  <div class="tab" id="tab-citas">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Gestión de Citas</h1><p>{{ pend_c }} pendientes de confirmación</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/citas" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/citas" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>📅 Todas las citas</h3></div><span class="tbl-cnt">{{ citas_all|length }}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Paciente</th><th>Servicio</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Motivo</th><th>Notas Doctor</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {% for c in citas_all %}
+            <tr>
+              <td><strong>#{{ c.id }}</strong></td>
+              <td><strong>{{ c.pn or c.nombre_libre or '—' }}</strong>{% if c.tel_libre %}<br><span class="td-sm">📞 {{ c.tel_libre }}</span>{% endif %}</td>
+              <td>{{ c.servicio }}</td>
+              <td><strong>{{ c.fecha }}</strong></td>
+              <td>{{ c.hora }}</td>
+              <td><span class="bd {{ c.estado }}">{{ c.estado.upper() }}</span></td>
+              <td><span class="td-sm">{{ c.motivo or '—' }}</span></td>
+              <td><span class="td-sm">{{ c.notas_doctor or '—' }}</span></td>
+              <td>
+                <form method="POST" action="/admin/cita/{{ c.id }}/estado" style="display:contents;">
+                  <input type="hidden" name="notas" value="">
+                  <div class="acts">
+                    {% if c.estado != 'confirmada' %}<button type="submit" name="estado" value="confirmada" class="abtn conf">✅</button>{% endif %}
+                    {% if c.estado != 'completada' %}<button type="submit" name="estado" value="completada" class="abtn comp">🏁</button>{% endif %}
+                    {% if c.estado != 'cancelada' %}<button type="submit" name="estado" value="cancelada" class="abtn rech">❌</button>{% endif %}
+                  </div>
+                </form>
+                <form method="POST" action="/admin/cita/{{ c.id }}/delete" onsubmit="return confirm('¿Eliminar cita #{{ c.id }}?')" style="display:contents;">
+                  <button type="submit" class="abtn del" style="margin-top:4px;">🗑</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="9" style="text-align:center;padding:48px;color:var(--gray);">Sin citas registradas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAGOS ══ -->
+  <div class="tab" id="tab-pagos">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Pagos y Reservas</h1><p>S/ {{ '%.2f'|format(ingresos) }} confirmados · {{ pend_p }} pendientes</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/pagos" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/pagos" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>💳 Todos los pagos</h3><p>Confirma los pagos verificados</p></div><span class="tbl-cnt">{{ pagos_all|length }}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Paciente</th><th>Servicio</th><th>Monto</th><th>Método</th><th>Estado</th><th>Captura</th><th>Referencia</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {% for p in pagos_all %}
+            <tr>
+              <td><strong>#{{ p.id }}</strong></td>
+              <td><strong>{{ p.pn or p.nombre_libre or '—' }}</strong>{% if p.notas %}<br><span class="td-sm">📝 {{ p.notas[:25] }}</span>{% endif %}</td>
+              <td style="max-width:140px;font-size:.79rem;">{{ p.servicio }}</td>
+              <td><strong style="color:var(--b2);">S/ {{ '%.2f'|format(p.monto) }}</strong></td>
+              <td>{% if p.metodo == 'yape' %}💜{% elif p.metodo == 'plin' %}🔵{% elif p.metodo == 'transferencia' %}🏦{% else %}💵{% endif %} {{ p.metodo.upper() }}</td>
+              <td><span class="bd {{ p.estado }}">{{ p.estado.upper() }}</span></td>
+              <td>{% if p.captura_b64 %}<img src="data:image/jpeg;base64,{{ p.captura_b64 }}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;cursor:zoom-in;border:1px solid var(--border);" onclick="openModal(this.src)">{% else %}<span class="td-sm">—</span>{% endif %}</td>
+              <td><span class="td-sm">{{ p.referencia or '—' }}</span></td>
+              <td><span class="td-sm">{{ p.created_at[:10] }}</span></td>
+              <td>
+                <div class="acts">
+                  {% if p.estado != 'confirmado' %}
+                  <form method="POST" action="/admin/pago/{{ p.id }}/estado" style="display:contents;"><input type="hidden" name="estado" value="confirmado"><button type="submit" class="abtn conf">✅</button></form>
+                  {% endif %}
+                  {% if p.estado != 'rechazado' %}
+                  <form method="POST" action="/admin/pago/{{ p.id }}/estado" style="display:contents;"><input type="hidden" name="estado" value="rechazado"><button type="submit" class="abtn rech">❌</button></form>
+                  {% endif %}
+                  <form method="POST" action="/admin/pago/{{ p.id }}/delete" onsubmit="return confirm('¿Eliminar pago #{{ p.id }}?')" style="display:contents;"><button type="submit" class="abtn del">🗑</button></form>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="10" style="text-align:center;padding:48px;color:var(--gray);">Sin pagos registrados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESEÑAS ══ -->
+  <div class="tab" id="tab-resenas">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Reseñas</h1><p>Promedio: ⭐ {{ avg_star }}/5 · {{ t_res }} opiniones</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/resenas" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/resenas" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>⭐ Todas las reseñas</h3></div><span class="tbl-cnt">{{ resenas|length }}</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Paciente</th><th>Servicio</th><th>Calificación</th><th>Comentario</th><th>Votos</th><th>Fecha</th><th>Eliminar</th></tr></thead>
+          <tbody>
+            {% for r in resenas %}
+            <tr>
+              <td>#{{ r.id }}</td>
+              <td><strong>{{ r.nombre }}</strong></td>
+              <td>{{ r.servicio }}</td>
+              <td><div class="stars">{% for i in range(r.estrellas) %}⭐{% endfor %}</div><span class="td-sm">{{ r.estrellas }}/5</span></td>
+              <td style="max-width:240px;font-size:.78rem;color:var(--gray);">{{ r.comentario or '—' }}</td>
+              <td><span class="td-sm">👍 {{ r.util_si }} · 👎 {{ r.util_no }}</span></td>
+              <td class="td-sm">{{ r.created_at[:10] }}</td>
+              <td><form method="POST" action="/admin/resena/{{ r.id }}/delete" onsubmit="return confirm('¿Eliminar?')" style="display:contents;"><button type="submit" class="abtn del">🗑</button></form></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" style="text-align:center;padding:48px;color:var(--gray);">Sin reseñas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ INVENTARIO ══ -->
+  <div class="tab" id="tab-inventario">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Inventario</h1><p>Control de materiales y suministros{% if inv_bajo > 0 %} · <span style="color:var(--red);font-weight:600;">⚠️ {{ inv_bajo }} item{{ 's' if inv_bajo > 1 }} bajo stock</span>{% endif %}</p></div>
+      <button class="btn-add-inv" onclick="openInvModal()">+ Agregar Item</button>
+    </div>
+    {% if inventario %}
+    <div class="inv-grid">
+      {% for item in inventario %}
+      <div class="inv-card {{ 'low' if item.cantidad <= item.minimo else '' }}">
+        {% if item.cantidad <= item.minimo %}<span class="inv-low-badge">⚠️ Stock bajo</span>{% endif %}
+        <p class="inv-name">{{ item.nombre }}</p>
+        <p class="inv-cat">📦 {{ item.categoria }}</p>
+        <div class="inv-qty-row">
+          <div><div class="inv-qty">{{ item.cantidad }}</div><div class="inv-unit">{{ item.unidad or 'unidades' }}</div></div>
+          {% if item.precio_unit > 0 %}<div style="text-align:right;"><div style="font-size:.82rem;font-weight:700;color:var(--b2);">S/ {{ '%.2f'|format(item.precio_unit) }}</div><div style="font-size:.65rem;color:var(--gray);">por unidad</div></div>{% endif %}
+        </div>
+        <div class="inv-actions">
+          <button class="inv-btn inv-plus" onclick="updInv({{ item.id }},1)">+1</button>
+          <button class="inv-btn inv-plus" onclick="updInv({{ item.id }},5)">+5</button>
+          <button class="inv-btn inv-minus" onclick="updInv({{ item.id }},-1)">-1</button>
+          <form method="POST" action="/admin/inventario/{{ item.id }}/delete" onsubmit="return confirm('¿Eliminar {{ item.nombre }}?')" style="display:contents;">
+            <button type="submit" class="inv-btn inv-del">🗑</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:60px;color:var(--gray);"><div style="font-size:3rem;margin-bottom:12px;">📦</div><p style="font-weight:600;color:var(--c1);">Sin items en inventario</p><button class="btn-add-inv" style="margin-top:16px;" onclick="openInvModal()">+ Agregar primer item</button></div>
+    {% endif %}
+  </div>
+
+  <!-- ══ REPORTES ══ -->
+  <div class="tab" id="tab-reportes">
+    <div class="page-hd"><div class="phd-left"><h1>Exportar Reportes</h1><p>PDF horizontal celeste + Excel ampliado con email, teléfono, edad, sexo</p></div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">
+      {% for tipo, icon, titulo, desc in [
+        ('escaneos','🔬','Escaneos Dentales','Análisis IA con email, teléfono, edad y sexo del paciente'),
+        ('pagos','💳','Pagos y Reservas','Ingresos con email, teléfono, referencia y monto confirmado'),
+        ('citas','📅','Agenda de Citas','Citas con datos de contacto, estado y notas del doctor'),
+        ('pacientes','👥','Pacientes','Lista completa con edad, sexo, dirección, alergias y puntos'),
+        ('historial','📋','Historial Clínico','Registros clínicos con diagnóstico, tratamiento y medicamentos'),
+        ('resenas','⭐','Reseñas','Opiniones y calificaciones recibidas')
+      ] %}
+      <div style="background:var(--white);border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);padding:28px;text-align:center;transition:transform .3s var(--spring);" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+        <div style="font-size:2.8rem;margin-bottom:12px;">{{ icon }}</div>
+        <h3 style="font-family:var(--ffh);font-size:1.05rem;color:var(--c0);margin-bottom:6px;">{{ titulo }}</h3>
+        <p style="font-size:.77rem;color:var(--gray);margin-bottom:20px;line-height:1.55;">{{ desc }}</p>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <a href="/admin/export/pdf/{{ tipo }}" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+          <a href="/admin/export/excel/{{ tipo }}" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:22px;background:var(--white);border-radius:16px;padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);">
+      <h3 style="font-family:var(--ffh);font-size:1.1rem;color:var(--c0);margin-bottom:14px;">⬇️ Backup y Visualización</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/admin/backup-db" class="exp-btn exp-xlsx" style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;">⬇️ Descargar Base de Datos (.db)</a>
+        <a href="/admin/ver-bd" target="_blank" class="exp-btn" style="background:var(--pearl);color:var(--b2);border:1px solid var(--border);">🗃️ Visualizar todos los datos</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ CONFIGURACIÓN SEGURA ══ -->
+  <div class="tab" id="tab-config">
+    <div class="page-hd"><div class="phd-left"><h1>API Keys</h1><p>Guarda tus claves fuera del código para subir el proyecto a GitHub sin exponer secretos</p></div></div>
+    {% if admin_msg %}
+    <div style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;border-radius:14px;padding:12px 16px;margin-bottom:18px;font-size:.84rem;font-weight:700;">{{ admin_msg }}</div>
+    {% endif %}
+    <div class="tbl-card">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>🔐 Claves locales</h3><p>Se guardan en .env.local y ese archivo queda ignorado por Git</p></div></div>
+      <form method="POST" action="/admin/api-keys" style="padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="fg">
+          <label>Google Gemini API Key</label>
+          <input type="password" name="gemini_api_key" placeholder="Pega una nueva key de Gemini" autocomplete="off">
+          <span style="font-size:.72rem;color:var(--gray);">Estado: <strong style="color:var(--c1);">{{ gemini_key_status }}</strong></span>
+        </div>
+        <div class="fg">
+          <label>Modelo Gemini</label>
+          <input type="text" name="gemini_model" value="{{ gemini_model }}" autocomplete="off">
+        </div>
+        <div class="fg">
+          <label>Groq API Key</label>
+          <input type="password" name="groq_api_key" placeholder="Pega una nueva key de Groq" autocomplete="off">
+          <span style="font-size:.72rem;color:var(--gray);">Estado: <strong style="color:var(--c1);">{{ groq_key_status }}</strong></span>
+        </div>
+        <div class="fg">
+          <label>Modelo Groq</label>
+          <input type="text" name="groq_model" value="{{ groq_model }}" autocomplete="off">
+        </div>
+        <div style="grid-column:1/-1;background:var(--pearl);border:1px solid var(--border);border-radius:14px;padding:14px 16px;color:var(--gray);font-size:.8rem;line-height:1.55;">
+          Si dejas una API key vacía, se conserva la anterior. Las claves no se muestran completas en pantalla y no se escriben dentro de app.py.
+        </div>
+        <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button type="submit" class="exp-btn exp-xlsx">💾 Guardar claves</button>
+          <span style="font-size:.76rem;color:var(--gray);">Archivo local: .env.local</span>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ══ HISTORIAL CLÍNICO ══ -->
+  <div class="tab" id="tab-historial">
+    <div class="page-hd">
+      <div class="phd-left"><h1>Historial Clínico</h1><p>{{ t_hist }} registros clínicos · Selecciona un paciente para ver o agregar</p></div>
+      <div class="export-btns">
+        <a href="/admin/export/pdf/historial" target="_blank" class="exp-btn exp-pdf">📄 PDF</a>
+        <a href="/admin/export/excel/historial" target="_blank" class="exp-btn exp-xlsx">📊 Excel</a>
+      </div>
+    </div>
+    <!-- Selector de paciente -->
+    <div class="tbl-card" style="margin-bottom:20px;">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>🔍 Buscar paciente</h3></div></div>
+      <div style="padding:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:1;min-width:200px;">
+          <label style="font-size:.67rem;font-weight:700;color:var(--c1);letter-spacing:.4px;text-transform:uppercase;display:block;margin-bottom:6px;">Paciente *</label>
+          <select id="hist-pac-sel" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;color:var(--c0);outline:none;" onchange="cargarHistorial()">
+            <option value="">Selecciona un paciente...</option>
+            {% for p in pacientes %}
+            <option value="{{ p.id }}">{{ p.nombre }} {{ p.apellido }} — {{ p.email }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button class="exp-btn exp-pdf" onclick="exportarHistorialPDF()" id="btn-hist-pdf" style="display:none">📄 PDF del paciente</button>
+      </div>
+      <!-- Info del paciente -->
+      <div id="pac-info-box" style="display:none;margin:0 18px 18px;padding:16px;background:var(--pearl);border-radius:12px;border:1px solid var(--border);">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;">
+          <div><strong style="color:var(--c1);">Paciente:</strong> <span id="pi-nombre">—</span></div>
+          <div><strong style="color:var(--c1);">Edad:</strong> <span id="pi-edad">—</span></div>
+          <div><strong style="color:var(--c1);">Sexo:</strong> <span id="pi-sexo">—</span></div>
+          <div><strong style="color:var(--c1);">Email:</strong> <span id="pi-email">—</span></div>
+          <div><strong style="color:var(--c1);">Tel:</strong> <span id="pi-tel">—</span></div>
+          <div><strong style="color:var(--red);">Alergias:</strong> <span id="pi-alerg">—</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Registros del historial -->
+    <div id="historial-list" style="display:none;">
+      <div class="tbl-card" style="margin-bottom:20px;">
+        <div class="tbl-hd"><div class="tbl-hd-l"><h3>📋 Registros clínicos</h3><p id="hist-count-label"></p></div></div>
+        <div id="hist-rows-wrap" style="overflow-x:auto;max-height:400px;overflow-y:auto;"></div>
+      </div>
+      <!-- Agregar entrada -->
+      <div class="tbl-card">
+        <div class="tbl-hd"><div class="tbl-hd-l"><h3>➕ Nueva entrada clínica</h3></div></div>
+        <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="fg"><label>Fecha</label><input type="date" id="hf-fecha"></div>
+          <div class="fg"><label>Tipo de atención</label>
+            <select id="hf-tipo" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;width:100%;">
+              <option>Consulta</option><option>Limpieza</option><option>Blanqueamiento</option>
+              <option>Ortodoncia</option><option>Implante</option><option>Endodoncia</option>
+              <option>Extracción</option><option>Cirugía</option><option>Periodoncia</option>
+              <option>Prótesis</option><option>Emergencia</option><option>Control</option>
+            </select>
+          </div>
+          <div class="fg" style="grid-column:1/-1;"><label>Diagnóstico</label><textarea id="hf-diag" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;resize:vertical;min-height:70px;"></textarea></div>
+          <div class="fg"><label>Tratamiento realizado</label><textarea id="hf-trat" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;resize:vertical;min-height:60px;"></textarea></div>
+          <div class="fg"><label>Medicamentos / Receta</label><textarea id="hf-med" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;resize:vertical;min-height:60px;"></textarea></div>
+          <div class="fg"><label>Odontograma / Piezas tratadas</label><input type="text" id="hf-odonto" placeholder="Ej: 16, 17, 26" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;width:100%;"></div>
+          <div class="fg"><label>Próxima cita</label><input type="date" id="hf-prox" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;width:100%;"></div>
+          <div class="fg" style="grid-column:1/-1;"><label>Observaciones adicionales</label><textarea id="hf-obs" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:var(--ff);font-size:.87rem;outline:none;resize:vertical;min-height:60px;"></textarea></div>
+        </div>
+        <div style="padding:0 20px 20px;display:flex;gap:10px;align-items:center;">
+          <button class="abtn conf" style="padding:10px 24px;font-size:.84rem;" onclick="guardarHistorial()">💾 Guardar entrada</button>
+          <span id="hist-msg" style="font-size:.8rem;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CUMPLEAÑOS ══ -->
+  <div class="tab" id="tab-cumpleanos">
+    <div class="page-hd"><div class="phd-left"><h1>🎂 Cumpleaños</h1><p>El sistema envía saludos automáticos y +25 puntos de regalo</p></div></div>
+    {% if cumpleaneros_hoy %}
+    <div style="background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:16px;padding:20px 24px;margin-bottom:20px;color:#fff;">
+      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;">🎉 Cumpleaños HOY — Saludo automático enviado</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        {% for nombre in cumpleaneros_hoy %}
+        <span style="background:rgba(255,255,255,.2);border-radius:50px;padding:5px 14px;font-size:.82rem;font-weight:600;">🎂 {{ nombre }}</span>
+        {% endfor %}
+      </div>
+      <p style="font-size:.76rem;opacity:.7;margin-top:10px;">Cada paciente recibió +25 puntos como regalo 🎁</p>
+    </div>
+    {% endif %}
+    <div class="tbl-card">
+      <div class="tbl-hd"><div class="tbl-hd-l"><h3>📅 Próximos cumpleaños (30 días)</h3><p>Sistema automático: envía notificación + 25 pts al abrir el sistema ese día</p></div><span class="tbl-cnt">{{ proximos_cumple|length }} próximos</span></div>
+      {% if proximos_cumple %}
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Paciente</th><th>Cumple</th><th>Días</th><th>Email</th><th>Teléfono</th></tr></thead>
+          <tbody>
+            {% for p in proximos_cumple %}
+            <tr>
+              <td><strong>{{ p.nombre }}</strong></td>
+              <td>🎂 {{ p.fecha }}</td>
+              <td>{% if p.dias == 0 %}<span style="color:var(--g1);font-weight:700;">HOY 🎉</span>{% elif p.dias == 1 %}<span style="color:var(--gold);font-weight:700;">Mañana</span>{% else %}<span>En {{ p.dias }} días</span>{% endif %}</td>
+              <td class="td-sm">{{ p.email or '—' }}</td>
+              <td class="td-sm">{{ p.tel or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:48px;color:var(--gray);"><div style="font-size:3rem;margin-bottom:12px;">🎂</div><p style="font-weight:600;color:var(--c1);">Sin cumpleaños en los próximos 30 días</p><p style="font-size:.8rem;margin-top:6px;">Asegúrate de que los pacientes tengan su fecha de nacimiento registrada en su perfil.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+
+<!-- Modal foto -->
+<div class="modal-bg" id="modal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <img class="modal-img" id="modal-img" src="" alt="">
+</div>
+
+<!-- Modal inventario -->
+<div class="modal-bg" id="inv-modal">
+  <div class="modal-form">
+    <h3>📦 Agregar al Inventario</h3>
+    <div class="fg"><label>Nombre del item *</label><input type="text" id="inv-nombre" placeholder="Ej: Guantes de látex"></div>
+    <div class="fg"><label>Categoría *</label>
+      <select id="inv-cat">
+        <option value="">Selecciona...</option>
+        <option>Materiales de protección</option><option>Instrumental</option>
+        <option>Materiales dentales</option><option>Medicamentos</option>
+        <option>Limpieza y esterilización</option><option>Otros</option>
+      </select>
+    </div>
+    <div class="fg-row2">
+      <div class="fg"><label>Cantidad *</label><input type="number" id="inv-qty" placeholder="0" min="0"></div>
+      <div class="fg"><label>Unidad</label><input type="text" id="inv-unit" placeholder="cajas, unidades..."></div>
+    </div>
+    <div class="fg-row2">
+      <div class="fg"><label>Stock mínimo</label><input type="number" id="inv-min" placeholder="5" min="1" value="5"></div>
+      <div class="fg"><label>Precio unitario (S/)</label><input type="number" id="inv-precio" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <div style="margin-top:6px;display:flex;gap:8px;">
+      <button class="btn-modal-save" onclick="saveInv()">Guardar</button>
+      <button class="btn-modal-cancel" onclick="closeInvModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+/* ── TABS ── */
+const tabTitles={dashboard:'Dashboard',pacientes:'Pacientes',escaneos:'Escaneos IA',citas:'Citas',pagos:'Pagos',resenas:'Reseñas',inventario:'Inventario',historial:'Historial Clínico',cumpleanos:'Cumpleaños',reportes:'Exportar Reportes',config:'API Keys'};
+function goTab(name,btn){
+  if(name) history.replaceState(null,'','#'+name);
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  if(btn)btn.classList.add('on');
+  document.getElementById('tb-title').textContent=tabTitles[name]||name;
+}
+
+/* ── HISTORIAL CLÍNICO ── */
+let histPacId=null;
+async function cargarHistorial(){
+  const sel=document.getElementById('hist-pac-sel');
+  histPacId=parseInt(sel.value)||null;
+  if(!histPacId){
+    document.getElementById('pac-info-box').style.display='none';
+    document.getElementById('historial-list').style.display='none';
+    document.getElementById('btn-hist-pdf').style.display='none';
+    return;
+  }
+  const r=await fetch(`/admin/historial/${histPacId}`).then(x=>x.json());
+  if(!r.ok){showToast('Error al cargar historial','err');return;}
+  const p=r.paciente;
+  document.getElementById('pi-nombre').textContent=`${p.nombre} ${p.apellido}`;
+  document.getElementById('pi-edad').textContent=(r.edad||'—')+' años';
+  document.getElementById('pi-sexo').textContent=p.sexo||'—';
+  document.getElementById('pi-email').textContent=p.email||'—';
+  document.getElementById('pi-tel').textContent=p.telefono||'—';
+  document.getElementById('pi-alerg').textContent=p.alergias||'Sin alergias registradas';
+  document.getElementById('pac-info-box').style.display='block';
+  document.getElementById('historial-list').style.display='block';
+  document.getElementById('btn-hist-pdf').style.display='inline-flex';
+  // Fecha default = hoy
+  document.getElementById('hf-fecha').value=new Date().toISOString().split('T')[0];
+  // Renderizar registros
+  const wrap=document.getElementById('hist-rows-wrap');
+  document.getElementById('hist-count-label').textContent=`${r.historial.length} entradas registradas`;
+  if(!r.historial.length){wrap.innerHTML='<div style="padding:40px;text-align:center;color:var(--gray);">📋 Sin entradas clínicas aún. Agrega la primera abajo.</div>';return;}
+  let html=`<table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+    <thead><tr>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Fecha</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Tipo</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Diagnóstico</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Tratamiento</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Medicamentos</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Próx. Cita</th>
+      <th style="background:var(--pearl);padding:9px 12px;text-align:left;font-size:.64rem;font-weight:700;color:var(--gray);text-transform:uppercase;border-bottom:1px solid var(--border);">Acción</th>
+    </tr></thead><tbody>`;
+  r.historial.forEach(h=>{
+    html+=`<tr style="border-bottom:1px solid #f1f5f9;">
+      <td style="padding:10px 12px;">${h.fecha||'—'}</td>
+      <td style="padding:10px 12px;"><span style="background:var(--pearl);border:1px solid var(--border);border-radius:50px;padding:2px 10px;font-size:.7rem;font-weight:700;">${h.tipo||'—'}</span></td>
+      <td style="padding:10px 12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${h.diagnostico||''}">${(h.diagnostico||'—').slice(0,60)}${(h.diagnostico||'').length>60?'...':''}</td>
+      <td style="padding:10px 12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${h.tratamiento_realizado||''}">${(h.tratamiento_realizado||'—').slice(0,50)}${(h.tratamiento_realizado||'').length>50?'...':''}</td>
+      <td style="padding:10px 12px;font-size:.75rem;color:var(--gray);">${(h.medicamentos||'—').slice(0,40)}</td>
+      <td style="padding:10px 12px;font-size:.75rem;">${h.proxima_cita||'—'}</td>
+      <td style="padding:10px 12px;">
+        <button class="abtn del" onclick="eliminarHistorial(${h.id})">🗑</button>
+      </td>
+    </tr>`;
+  });
+  html+=`</tbody></table>`;
+  wrap.innerHTML=html;
+}
+
+async function guardarHistorial(){
+  if(!histPacId){showToast('Selecciona un paciente primero','err');return;}
+  const d={
+    paciente_id:histPacId,
+    fecha:document.getElementById('hf-fecha').value,
+    tipo:document.getElementById('hf-tipo').value,
+    diagnostico:document.getElementById('hf-diag').value.trim(),
+    tratamiento_realizado:document.getElementById('hf-trat').value.trim(),
+    medicamentos:document.getElementById('hf-med').value.trim(),
+    odontograma:document.getElementById('hf-odonto').value.trim(),
+    proxima_cita:document.getElementById('hf-prox').value,
+    observaciones:document.getElementById('hf-obs').value.trim(),
+  };
+  const r=await fetch('/admin/historial/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).then(x=>x.json());
+  if(r.ok){
+    showToast('✅ Entrada guardada','ok');
+    ['hf-diag','hf-trat','hf-med','hf-odonto','hf-obs'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('hf-prox').value='';
+    cargarHistorial();
+  } else showToast('❌ '+r.msg,'err');
+}
+
+async function eliminarHistorial(hid){
+  if(!confirm('¿Eliminar esta entrada del historial?'))return;
+  const r=await fetch(`/admin/historial/${hid}/delete`,{method:'POST'}).then(x=>x.json());
+  if(r.ok){showToast('Entrada eliminada');cargarHistorial();}
+}
+
+function exportarHistorialPDF(){
+  if(!histPacId)return;
+  window.open(`/admin/export/pdf/historial?paciente_id=${histPacId}`,'_blank');
+}
+
+
+/* ── MODAL FOTO ── */
+function openModal(src){document.getElementById('modal-img').src=src;document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeInvModal();}});
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+/* ── TOAST ── */
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type||'');setTimeout(()=>t.className='toast',3000);}
+
+/* ── INVENTARIO ── */
+function openInvModal(){document.getElementById('inv-modal').classList.add('open');}
+function closeInvModal(){document.getElementById('inv-modal').classList.remove('open');}
+document.getElementById('inv-modal').addEventListener('click',function(e){if(e.target===this)closeInvModal();});
+
+async function saveInv(){
+  const nombre=document.getElementById('inv-nombre').value.trim();
+  const categoria=document.getElementById('inv-cat').value;
+  const cantidad=parseInt(document.getElementById('inv-qty').value)||0;
+  const unidad=document.getElementById('inv-unit').value.trim();
+  const minimo=parseInt(document.getElementById('inv-min').value)||5;
+  const precio=parseFloat(document.getElementById('inv-precio').value)||0;
+  if(!nombre||!categoria){showToast('⚠️ Completa nombre y categoría','err');return;}
+  const r=await fetch('/admin/inventario/add',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({nombre,categoria,cantidad,unidad,minimo,precio})}).then(x=>x.json());
+  if(r.ok){showToast('✅ Item agregado','ok');closeInvModal();setTimeout(()=>location.reload(),1000);}
+  else showToast('❌ Error al guardar','err');
+}
+
+async function updInv(id,delta){
+  const r=await fetch(`/admin/inventario/${id}/update`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({delta})}).then(x=>x.json());
+  if(r.ok){showToast(`✅ Stock actualizado (${delta>0?'+':''}${delta})`,delta>0?'ok':'');setTimeout(()=>location.reload(),800);}
+  else showToast('❌ Error','err');
+}
+
+/* ── CHARTS ── */
+const diasD   = {{ sc_dias|safe }};
+const urgD    = {{ urg_dist|safe }};
+const metD    = {{ pago_met|safe }};
+const estD    = {{ pago_est|safe }};
+const starD   = {{ star_d|safe }};
+const pacD    = {{ pac_dias|safe }};
+const svcD    = {{ cita_svc|safe }};
+const ingD    = {{ ingresos_dias|safe }};
+const exprD   = {{ expresion_dist|safe }};
+
+const PAL  = ['#050e27','#0c1e4a','#1d4ed8','#0ea5e9','#38bdf8','#7dd3fc'];
+const URGC = {baja:'#10b981',media:'#f59e0b',alta:'#f97316',urgente:'#ef4444'};
+const METC = {yape:'#7c3aed',plin:'#2563eb',transferencia:'#10b981',efectivo:'#f59e0b'};
+const ESTC = {pendiente:'#f59e0b',confirmado:'#10b981',rechazado:'#ef4444'};
+const STAR = ['#ef4444','#f97316','#f59e0b','#84cc16','#22c55e'];
+const gOpts = {grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10}}};
+
+function mkChart(id,type,data,options={}){
+  const el=document.getElementById(id);
+  if(!el)return;
+  return new Chart(el,{type,data,options:{responsive:true,...options}});
+}
+
+if(diasD.length)mkChart('ch-dias','bar',{labels:diasD.map(d=>d.d),datasets:[{label:'Escaneos',data:diasD.map(d=>d.c),backgroundColor:'rgba(37,99,235,.7)',borderRadius:5,borderSkipped:false}]},{plugins:{legend:{display:false}},scales:{x:{...gOpts,grid:{display:false}},y:{...gOpts,beginAtZero:true,ticks:{stepSize:1}}}});
+if(urgD.length)mkChart('ch-urg','doughnut',{labels:urgD.map(d=>d.nivel_urgencia),datasets:[{data:urgD.map(d=>d.c),backgroundColor:urgD.map(d=>URGC[d.nivel_urgencia]||'#64748b'),borderWidth:0,hoverOffset:6}]},{plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:10}}}});
+if(metD.length)mkChart('ch-met','doughnut',{labels:metD.map(d=>d.metodo.toUpperCase()),datasets:[{data:metD.map(d=>d.c),backgroundColor:metD.map(d=>METC[d.metodo]||'#64748b'),borderWidth:0,hoverOffset:6}]},{plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:10}}}});
+if(estD.length)mkChart('ch-est','pie',{labels:estD.map(d=>d.estado.toUpperCase()),datasets:[{data:estD.map(d=>d.c),backgroundColor:estD.map(d=>ESTC[d.estado]||'#64748b'),borderWidth:0}]},{plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:10}}}});
+const starArr=[0,0,0,0,0];starD.forEach(d=>{starArr[d.estrellas-1]=d.c;});
+mkChart('ch-stars','bar',{labels:['1⭐','2⭐','3⭐','4⭐','5⭐'],datasets:[{data:starArr,backgroundColor:STAR,borderRadius:5,borderSkipped:false}]},{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1}}}});
+if(pacD.length)mkChart('ch-pac','line',{labels:pacD.map(d=>d.d),datasets:[{label:'Pacientes',data:pacD.map(d=>d.c),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.1)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#10b981'}]},{plugins:{legend:{display:false}},scales:{x:{...gOpts,grid:{display:false}},y:{...gOpts,beginAtZero:true,ticks:{stepSize:1}}}});
+if(svcD.length)mkChart('ch-svc','bar',{labels:svcD.map(d=>d.servicio.replace('Dentales','').replace('Dental','').trim()),datasets:[{data:svcD.map(d=>d.c),backgroundColor:'rgba(14,165,233,.7)',borderRadius:5,borderSkipped:false}]},{plugins:{legend:{display:false}},indexAxis:'y',scales:{x:{beginAtZero:true,ticks:{stepSize:1}},y:{grid:{display:false}}}});
+if(ingD.length)mkChart('ch-ing','line',{labels:ingD.map(d=>d.d),datasets:[{label:'S/ Ingresos',data:ingD.map(d=>d.s),borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#f59e0b'}]},{plugins:{legend:{display:false}},scales:{x:{...gOpts,grid:{display:false}},y:{...gOpts,beginAtZero:true}}});
+const initialTab=location.hash.replace('#','');
+if(initialTab&&document.getElementById('tab-'+initialTab)){
+  const btn=[...document.querySelectorAll('.sb-item')].find(b=>b.getAttribute('onclick')?.includes("'"+initialTab+"'"));
+  goTab(initialTab,btn);
+}
+
+if(exprD.length)mkChart('ch-expr','doughnut',{labels:exprD.map(d=>d.expresion),datasets:[{data:exprD.map(d=>d.c),backgroundColor:PAL,borderWidth:0,hoverOffset:6}]},{plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:10}}}});
+</script>
+</body>
+</html>
+
+
+
+
