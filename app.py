@@ -84,9 +84,9 @@ with warnings.catch_warnings():
 from groq import Groq
 
 # Fallback directo: pon aqui tus keys si no quieres usar .env.local
-DEFAULT_GEMINI_API_KEY = "AIzaSyC-B-3crqN8wwgcLgzI-s6RikoJUcQo-Is"
+DEFAULT_GEMINI_API_KEY = "AQ.Ab8RN6JcJpKt8HB-gUqu1uTCZzSMThJ6ozNWtmwyxf3BABtsGQ"
 DEFAULT_GEMINI_MODEL = "gemini-1.5-flash"
-DEFAULT_GROQ_API_KEY = "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"
+DEFAULT_GROQ_API_KEY = "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"
 DEFAULT_GROQ_MODEL = "gpt-oss-120b"
 
 GEMINI_API_KEY = DEFAULT_GEMINI_API_KEY
